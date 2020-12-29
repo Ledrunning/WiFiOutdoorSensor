@@ -13,7 +13,7 @@
 #include <Adafruit_BMP085.h>
 
 #define SERIAL_BAUDRATE 115200
-#define DHTPIN 16 // Digital pin connected to the DHT sensor
+#define DHTPIN 12 // Digital pin connected to the DHT sensor
 #define CONNECTION_DELAY 1000
 #define HTTP_STATUS_OK 200
 
