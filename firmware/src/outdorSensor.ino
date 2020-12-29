@@ -11,6 +11,7 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <Adafruit_BMP085.h>
+
 #define SERIAL_BAUDRATE 115200
 #define DHTPIN 16 // Digital pin connected to the DHT sensor
 #define CONNECTION_DELAY 1000
@@ -26,6 +27,9 @@ const char *ssid = "TP-Link_AF98";
 const char *password = "96767962";
 const uint8_t PORT = 80;
 const short BMP_CONNECTION_ATTEMPT = 5;
+
+// Time to sleep (in seconds):
+const int sleepTimeS = 10;
 
 // Updates DHT readings every 10 seconds
 const long interval = 10000;
@@ -212,8 +216,13 @@ void setup()
   server.on("/altitude", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send_P(HTTP_STATUS_OK, "text/plain", String(altitude).c_str());
   });
+
   // Start server
   server.begin();
+
+  // 10 sec in sleep mode
+  // NOTICE! Need to connect D0(WAKE)-GPIO16 Pin and RESET both!
+  ESP.deepSleep(sleepTimeS * 1000000);
 }
 
 void SetupBmp180()
