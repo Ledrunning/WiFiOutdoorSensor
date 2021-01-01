@@ -1,5 +1,5 @@
 /*********
- Outdor Wi Fi temperature sensor
+ Outdoor Wi Fi temperature sensor
 *********/
 
 // Import required libraries
@@ -27,6 +27,7 @@ const char *ssid = "TP-Link_AF98";
 const char *password = "96767962";
 const uint8_t PORT = 80;
 const short BMP_CONNECTION_ATTEMPT = 5;
+const double ADC_DELTA = 0.00486;
 
 // Time to sleep (in seconds):
 const int sleepTimeS = 10;
@@ -41,8 +42,9 @@ Adafruit_BMP085 bmp;
 // current temperature & humidity, updated in loop()
 float temperature = 0.0;
 float humidity = 0.0;
-
-int pressure = 0, altitude = 0;
+int pressure = 0;
+int altitude = 0;
+int chargeLevel = 0;
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(PORT);
@@ -50,6 +52,30 @@ AsyncWebServer server(PORT);
 // Generally, you should use "unsigned long" for variables that hold time
 // The value will quickly become too large for an int to store
 unsigned long previousMillis = 0; // will store last time DHT was updated
+
+float fVoltageMatrix[22][2] = {
+    {4.2, 100},
+    {4.15, 95},
+    {4.11, 90},
+    {4.08, 85},
+    {4.02, 80},
+    {3.98, 75},
+    {3.95, 70},
+    {3.91, 65},
+    {3.87, 60},
+    {3.85, 55},
+    {3.84, 50},
+    {3.82, 45},
+    {3.80, 40},
+    {3.79, 35},
+    {3.77, 30},
+    {3.75, 25},
+    {3.73, 20},
+    {3.71, 15},
+    {3.69, 10},
+    {3.61, 5},
+    {3.27, 0},
+    {0, 0}};
 
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
@@ -107,6 +133,13 @@ const char index_html[] PROGMEM = R"rawliteral(
       <span id="altitude">150</span>
       <sup class="units">m</sup>
   </p>
+
+     <p>
+      <i class="fas fa-battery-full"></i>
+      <span class="bmp-labels">Battery level</span>
+      <span id="chargeLevel">68</span>
+      <sup class="units">%</sup>
+  </p>
 </body>
 
 <script>
@@ -141,7 +174,7 @@ setInterval(function ( ) {
   };
   xhttp.open("GET", "/pressure", true);
   xhttp.send();
-}, 10000 ) ;
+}, 10000 );
 
  setInterval(function ( ) {
   var xhttp = new XMLHttpRequest();
@@ -152,13 +185,24 @@ setInterval(function ( ) {
   };
   xhttp.open("GET", "/altitude", true);
   xhttp.send();
-}, 10000 ) ;
+}, 10000 );
+
+ setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("chargeLevel").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "/Battery_status", true);
+  xhttp.send();
+}, 10000 );
 
 </script>
 </html>)rawliteral";
 
-// Replaces placeholder with DHT values
-String processor(const String &var)
+// Replaces placeholder with sensor values
+String getStringFromRoutings(const String &var)
 {
   //Serial.println(var);
   if (var == "TEMPERATURE")
@@ -176,6 +220,10 @@ String processor(const String &var)
   else if (var == "ALTITUDE")
   {
     return String(altitude);
+  }
+  else if (var == "BATTERY_STATUS")
+  {
+    return String(chargeLevel);
   }
   return String();
 }
@@ -202,7 +250,7 @@ void setup()
 
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(HTTP_STATUS_OK, "text/html", index_html, processor);
+    request->send_P(HTTP_STATUS_OK, "text/html", index_html, getStringFromRoutings);
   });
   server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send_P(HTTP_STATUS_OK, "text/plain", String(temperature).c_str());
@@ -214,6 +262,10 @@ void setup()
     request->send_P(HTTP_STATUS_OK, "text/plain", String(pressure).c_str());
   });
   server.on("/altitude", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send_P(HTTP_STATUS_OK, "text/plain", String(altitude).c_str());
+  });
+
+  server.on("/Battery_status", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send_P(HTTP_STATUS_OK, "text/plain", String(altitude).c_str());
   });
 
@@ -249,6 +301,24 @@ void readPressure(long &altitude, long &pressure)
   pressure = bmp.readPressure();
   pressure = pressure / 133.3; // frop Pa to мм рт
   altitude = bmp.readAltitude();
+}
+
+void readBatteryCharge()
+{
+
+  int nVoltageRaw = analogRead(A0);
+  float fVoltage = (float)nVoltageRaw * ADC_DELTA;
+
+  chargeLevel = 100;
+
+  for (int i = 20; i >= 0; i--)
+  {
+    if (fVoltageMatrix[i][0] >= fVoltage)
+    {
+      chargeLevel = fVoltageMatrix[i + 1][1];
+      break;
+    }
+  }
 }
 
 void loop()
