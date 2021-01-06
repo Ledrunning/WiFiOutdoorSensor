@@ -13,7 +13,7 @@
 #include <Adafruit_BMP085.h>
 
 #define SERIAL_BAUDRATE 115200
-#define DHTPIN 12 // Digital pin connected to the DHT sensor
+#define DHTPIN 14 // Digital pin connected to the DHT sensor
 #define CONNECTION_DELAY 1000
 #define HTTP_STATUS_OK 200
 
@@ -23,8 +23,8 @@
 //#define DHTTYPE    DHT21     // DHT 21 (AM2301)
 
 // Replace with your network credentials
-const char *ssid = "TP-Link_AF98";
-const char *password = "96767962";
+const char *ssid = "TP-LINK_91FA";
+const char *password = "68783709";
 const uint8_t PORT = 80;
 const short BMP_CONNECTION_ATTEMPT = 5;
 const double ADC_DELTA = 0.00486;
@@ -42,8 +42,8 @@ Adafruit_BMP085 bmp;
 // current temperature & humidity, updated in loop()
 float temperature = 0.0;
 float humidity = 0.0;
-int pressure = 0;
-int altitude = 0;
+long pressure = 0;
+long altitude = 0;
 int chargeLevel = 0;
 
 // Create AsyncWebServer object on port 80
@@ -109,35 +109,35 @@ const char index_html[] PROGMEM = R"rawliteral(
   <p>
     <i class="fas fa-thermometer-half" style="color:#059e8a;"></i> 
     <span class="dht-labels">Temperature</span> 
-    <span id="temperature">23.4</span>
+    <span id="temperature">%TEMPERATURE%</span>
     <sup class="units">&deg;C</sup>
   </p>
 
   <p>
     <i class="fas fa-tint" style="color:#00add6;"></i> 
     <span class="dht-labels">Humidity</span>
-    <span id="humidity">70.2</span>
+    <span id="humidity">%HUMIDITY%</span>
     <sup class="units">%</sup>
   </p>
 
    <p>
     <i class="fas fa-weight" style="color:#059e8a;"></i> 
     <span class="bmp-labels">Pressure</span>
-    <span id="pressure">760</span>
+    <span id="pressure">%PRESSURE%</span>
     <sup class="units">мм рт</sup>
   </p>
 
    <p>
       <i class="fas fa-arrows-alt-v" style="color:#00add6;"></i>
       <span class="bmp-labels">Altitude</span>
-      <span id="altitude">150</span>
-      <sup class="units">m</sup>
+      <span id="altitude">%ALTITUDE%</span>
+      <sup class="units">м</sup>
   </p>
 
      <p>
       <i class="fas fa-battery-full"></i>
       <span class="bmp-labels">Battery level</span>
-      <span id="chargeLevel">68</span>
+      <span id="chargeLevel">%BATTERY_STATUS%</span>
       <sup class="units">%</sup>
   </p>
 </body>
@@ -232,8 +232,7 @@ void setup()
 {
   // Serial port for debugging purposes
   Serial.begin(SERIAL_BAUDRATE);
-  dht.begin();
-
+  
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi");
@@ -243,10 +242,12 @@ void setup()
     Serial.println(".");
   }
 
+  dht.begin();
+
   // Print ESP8266 Local IP Address
   Serial.println(WiFi.localIP());
 
-  //SetupBmp180();
+  setupBmp180();
 
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -274,10 +275,10 @@ void setup()
 
   // 10 sec in sleep mode
   // NOTICE! Need to connect D0(WAKE)-GPIO16 Pin and RESET both!
-  ESP.deepSleep(sleepTimeS * 1000000);
+  //ESP.deepSleep(sleepTimeS * 1000000);
 }
 
-void SetupBmp180()
+void setupBmp180()
 {
   int count = 0;
   // Start reading bmp 180 sensor
@@ -324,8 +325,6 @@ void readBatteryCharge()
 void loop()
 {
 
-  //readPressure(altitude, pressure);
-
   unsigned long currentMillis = millis();
 
   if (currentMillis - previousMillis >= interval)
@@ -363,5 +362,15 @@ void loop()
       humidity = newHumidity;
       Serial.println(humidity);
     }
+
+     readPressure(altitude, pressure);
+      Serial.println("Altitude:");
+     Serial.println(altitude);
+     Serial.println("Pressure");
+     Serial.println(pressure);
+
+     readBatteryCharge();
+     Serial.println("BAttery level");
+     Serial.println(chargeLevel);
   }
 }
