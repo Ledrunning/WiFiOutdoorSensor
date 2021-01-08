@@ -242,6 +242,8 @@ void setup()
     Serial.println(".");
   }
 
+  WiFi.hostname("wheather_station"); 
+  
   dht.begin();
 
   // Print ESP8266 Local IP Address
