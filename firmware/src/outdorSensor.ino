@@ -41,7 +41,7 @@ const char *DEVICE_NAME = "weStation";
 const int SLEEP_TIME_MS = 10;
 
 // Updates DHT readings every 10 seconds
-const long DHT_READ_INTERVAL = 2000;
+const long DHT_READ_INTERVAL = 10000;
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -283,7 +283,7 @@ void setup()
 
   // 10 sec in sleep mode
   // NOTICE! Need to connect D0(WAKE)-GPIO16 Pin and RESET both!
-  //ESP.deepSleep(sleepTimeS * 1000000);
+  //ESP.deepSleep(SLEEP_TIME_MS * 1000000);
 }
 
 void setupBmp180()
