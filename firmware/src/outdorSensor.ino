@@ -120,30 +120,30 @@ const char index_html[] PROGMEM = R"rawliteral(
   </style>
 </head>
 <body>
-  <h2>Метеора 1.0</h2>
+  <h2>Метеора 1.0 ╔═(███)═╗</h2>
   <hr />
   <p>
-    <span class="all-labels">Temperature</span> 
+    <span class="all-labels">Температура</span> 
     <span id="temperature" class="data-labels">%TEMPERATURE%</span>
     <sup class="units">&deg;C</sup>
   </p>
   <p>
-    <span class="all-labels">Humidity</span>
+    <span class="all-labels">Влажность</span>
     <span id="humidity" class="data-labels">%HUMIDITY%</span>
     <sup class="units">%</sup>
   </p>
   <p>
-    <span class="all-labels">Pressure</span>
+    <span class="all-labels">Давление</span>
     <span id="pressure" class="data-labels">%PRESSURE%</span>
     <sup class="units">мм рс</sup>
   </p>
   <p>
-      <span class="all-labels">Altitude</span>
+      <span class="all-labels">Высота</span>
       <span id="altitude" class="data-labels">%ALTITUDE%</span>
       <sup class="units">м</sup>
   </p>
   <p>
-      <span class="all-labels">Battery level</span>
+      <span class="all-labels">Уровень батареи</span>
       <span id="chargeLevel" class="data-labels">%BATTERY_STATUS%</span>
       <sup class="units">%</sup>
   </p>
