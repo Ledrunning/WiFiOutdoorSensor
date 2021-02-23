@@ -11,8 +11,15 @@ namespace MeteoraDesktop.Presenter
     public class MainFormPresenter
     {
         private const string BaseAddress = "http://192.168.0.101/";
+        private const int TemperatureIndex = 0;
+        private const int HumidityIndex = 1;
+        private const int AltitudeIndex = 2;
+        private const int PressureIndex = 3;
+        private const int BatteryLevelIndex = 4;
 
-        private readonly List<string> Routings = new List<string>
+        private readonly List<string> data = new List<string>();
+
+        private readonly List<string> routings = new List<string>
         {
             "/temperature",
             "/humidity",
@@ -22,8 +29,6 @@ namespace MeteoraDesktop.Presenter
         };
 
         private readonly Timer timer = new Timer();
-
-        private readonly List<string> Data = new List<string>();
         private readonly IMainForm view;
 
         public MainFormPresenter(IMainForm view)
@@ -45,11 +50,11 @@ namespace MeteoraDesktop.Presenter
         private async void OnTimerTick(object sender, EventArgs e)
         {
             var dto = await GetData();
-            view.Temperature = dto[0];
-            view.Humidity = dto[1];
-            view.Altitude = dto[2];
-            view.Pressure = dto[3];
-            view.BatteryLevel = dto[4];
+            view.Temperature = dto[TemperatureIndex];
+            view.Humidity = dto[HumidityIndex];
+            view.Altitude = dto[AltitudeIndex];
+            view.Pressure = dto[PressureIndex];
+            view.BatteryLevel = dto[BatteryLevelIndex];
         }
 
         public async Task<List<string>> GetData()
@@ -60,21 +65,19 @@ namespace MeteoraDesktop.Presenter
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                foreach (var page in Routings)
+                foreach (var page in routings)
                 {
                     var response = await client.GetAsync(page);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var telemetry = await response.Content.ReadAsStringAsync(); // без await - Task.All Wait
-                        Data.Add(telemetry);
+                        var telemetry = await response.Content.ReadAsStringAsync();
+                        data.Add(telemetry);
                     }
                 }
 
-                return Data;
+                return data;
             }
-
-            return null;
         }
     }
 }

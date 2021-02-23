@@ -6,10 +6,6 @@ namespace MeteoraDesktop.View
 {
     public interface IMainForm
     {
-        List<string> Routings { get; set; }
-
-        List<string> Data { get; set; }
-
         MainFormPresenter Presenter { set; }
 
         string Temperature { get; set; }
