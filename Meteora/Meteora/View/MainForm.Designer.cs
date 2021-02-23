@@ -50,7 +50,7 @@ namespace MeteoraDesktop.View
             // 
             this.temperature.AutoSize = true;
             this.temperature.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.temperature.Location = new System.Drawing.Point(22, 67);
+            this.temperature.Location = new System.Drawing.Point(22, 94);
             this.temperature.Name = "temperature";
             this.temperature.Size = new System.Drawing.Size(53, 37);
             this.temperature.TabIndex = 0;
@@ -62,9 +62,10 @@ namespace MeteoraDesktop.View
             this.groupBox1.Controls.Add(this.humidity);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.temperature);
+            this.groupBox1.Font = new System.Drawing.Font("DS-Digital", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(262, 245);
+            this.groupBox1.Size = new System.Drawing.Size(273, 245);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "DHT-22";
@@ -72,9 +73,10 @@ namespace MeteoraDesktop.View
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(26, 128);
+            this.label2.Font = new System.Drawing.Font("DS-Digital", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(26, 149);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(82, 17);
+            this.label2.Size = new System.Drawing.Size(170, 34);
             this.label2.TabIndex = 3;
             this.label2.Text = "Humidity, %";
             // 
@@ -82,7 +84,7 @@ namespace MeteoraDesktop.View
             // 
             this.humidity.AutoSize = true;
             this.humidity.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.humidity.Location = new System.Drawing.Point(22, 157);
+            this.humidity.Location = new System.Drawing.Point(22, 186);
             this.humidity.Name = "humidity";
             this.humidity.Size = new System.Drawing.Size(53, 37);
             this.humidity.TabIndex = 2;
@@ -91,9 +93,10 @@ namespace MeteoraDesktop.View
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 37);
+            this.label1.Font = new System.Drawing.Font("DS-Digital", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(26, 58);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(107, 17);
+            this.label1.Size = new System.Drawing.Size(233, 34);
             this.label1.TabIndex = 1;
             this.label1.Text = "Temperature, C";
             // 
@@ -103,9 +106,10 @@ namespace MeteoraDesktop.View
             this.groupBox2.Controls.Add(this.pressure);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.altitude);
+            this.groupBox2.Font = new System.Drawing.Font("DS-Digital", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(291, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(262, 245);
+            this.groupBox2.Size = new System.Drawing.Size(281, 245);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "BMP-180";
@@ -113,9 +117,10 @@ namespace MeteoraDesktop.View
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(25, 128);
+            this.label3.Font = new System.Drawing.Font("DS-Digital", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(21, 147);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(108, 17);
+            this.label3.Size = new System.Drawing.Size(241, 34);
             this.label3.TabIndex = 3;
             this.label3.Text = "Pressure, mm rt";
             // 
@@ -123,7 +128,7 @@ namespace MeteoraDesktop.View
             // 
             this.pressure.AutoSize = true;
             this.pressure.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pressure.Location = new System.Drawing.Point(21, 157);
+            this.pressure.Location = new System.Drawing.Point(17, 183);
             this.pressure.Name = "pressure";
             this.pressure.Size = new System.Drawing.Size(53, 37);
             this.pressure.TabIndex = 2;
@@ -132,9 +137,10 @@ namespace MeteoraDesktop.View
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(26, 37);
+            this.label5.Font = new System.Drawing.Font("DS-Digital", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(22, 56);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(74, 17);
+            this.label5.Size = new System.Drawing.Size(174, 34);
             this.label5.TabIndex = 1;
             this.label5.Text = "Altitude, M";
             // 
@@ -142,7 +148,7 @@ namespace MeteoraDesktop.View
             // 
             this.altitude.AutoSize = true;
             this.altitude.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.altitude.Location = new System.Drawing.Point(22, 67);
+            this.altitude.Location = new System.Drawing.Point(18, 93);
             this.altitude.Name = "altitude";
             this.altitude.Size = new System.Drawing.Size(53, 37);
             this.altitude.TabIndex = 0;
@@ -151,6 +157,7 @@ namespace MeteoraDesktop.View
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.batteryLevel);
+            this.groupBox3.Font = new System.Drawing.Font("DS-Digital", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox3.Location = new System.Drawing.Point(36, 296);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(496, 49);
@@ -173,14 +180,14 @@ namespace MeteoraDesktop.View
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(570, 353);
+            this.ClientSize = new System.Drawing.Size(584, 353);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MinimumSize = new System.Drawing.Size(588, 400);
             this.Name = "MainForm";
-            this.Text = "MeteoraWebApiTest";
+            this.Text = "Meteora";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
