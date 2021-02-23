@@ -4,14 +4,15 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MeteoraDesktop.View;
 
-namespace MeteoraApiTest
+namespace MeteoraDesktop.Presenter
 {
-    public partial class MainForm : Form
+    public class MainFormPresenter
     {
         private const string BaseAddress = "http://192.168.0.101/";
-        private readonly Timer timer = new Timer();
-        List<string> routings = new List<string>()
+
+        private readonly List<string> Routings = new List<string>
         {
             "/temperature",
             "/humidity",
@@ -19,10 +20,22 @@ namespace MeteoraApiTest
             "/pressure",
             "/battery_status"
         };
-        List<string> data = new List<string>();
-        public MainForm()
+
+        private readonly Timer timer = new Timer();
+
+        private readonly List<string> Data = new List<string>();
+        private readonly IMainForm view;
+
+        public MainFormPresenter(IMainForm view)
         {
-            InitializeComponent();
+            this.view = view;
+            view.Presenter = this;
+
+            InitializeTimer();
+        }
+
+        private void InitializeTimer()
+        {
             timer.Enabled = true;
             timer.Interval = 1000;
             timer.Start();
@@ -32,11 +45,11 @@ namespace MeteoraApiTest
         private async void OnTimerTick(object sender, EventArgs e)
         {
             var dto = await GetData();
-            temperature.Text = dto[0];
-            humidity.Text = dto[1];
-            altitude.Text = dto[2];
-            pressure.Text = dto[3];
-            batteryLevel.Text = dto[4];
+            view.Temperature = dto[0];
+            view.Humidity = dto[1];
+            view.Altitude = dto[2];
+            view.Pressure = dto[3];
+            view.BatteryLevel = dto[4];
         }
 
         public async Task<List<string>> GetData()
@@ -47,19 +60,18 @@ namespace MeteoraApiTest
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                foreach (var page in routings)
+                foreach (var page in Routings)
                 {
                     var response = await client.GetAsync(page);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var telemetry = await response.Content.ReadAsStringAsync();
-                        data.Add(telemetry);
-                        
+                        var telemetry = await response.Content.ReadAsStringAsync(); // без await - Task.All Wait
+                        Data.Add(telemetry);
                     }
                 }
 
-                return data;
+                return Data;
             }
 
             return null;

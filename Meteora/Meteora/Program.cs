@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using MeteoraDesktop.View;
 
-namespace MeteoraApiTest
+namespace MeteoraDesktop
 {
     static class Program
     {

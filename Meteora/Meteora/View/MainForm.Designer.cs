@@ -1,5 +1,5 @@
 ﻿
-namespace MeteoraApiTest
+namespace MeteoraDesktop.View
 {
     partial class MainForm
     {
@@ -49,10 +49,10 @@ namespace MeteoraApiTest
             // temperature
             // 
             this.temperature.AutoSize = true;
-            this.temperature.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.temperature.Location = new System.Drawing.Point(21, 54);
+            this.temperature.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.temperature.Location = new System.Drawing.Point(22, 67);
             this.temperature.Name = "temperature";
-            this.temperature.Size = new System.Drawing.Size(46, 44);
+            this.temperature.Size = new System.Drawing.Size(53, 37);
             this.temperature.TabIndex = 0;
             this.temperature.Text = "--";
             // 
@@ -72,7 +72,7 @@ namespace MeteoraApiTest
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(26, 111);
+            this.label2.Location = new System.Drawing.Point(26, 128);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(82, 17);
             this.label2.TabIndex = 3;
@@ -81,10 +81,10 @@ namespace MeteoraApiTest
             // humidity
             // 
             this.humidity.AutoSize = true;
-            this.humidity.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.humidity.Location = new System.Drawing.Point(21, 128);
+            this.humidity.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.humidity.Location = new System.Drawing.Point(22, 157);
             this.humidity.Name = "humidity";
-            this.humidity.Size = new System.Drawing.Size(46, 44);
+            this.humidity.Size = new System.Drawing.Size(53, 37);
             this.humidity.TabIndex = 2;
             this.humidity.Text = "--";
             // 
@@ -113,7 +113,7 @@ namespace MeteoraApiTest
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(26, 111);
+            this.label3.Location = new System.Drawing.Point(25, 128);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(108, 17);
             this.label3.TabIndex = 3;
@@ -122,10 +122,10 @@ namespace MeteoraApiTest
             // pressure
             // 
             this.pressure.AutoSize = true;
-            this.pressure.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.pressure.Location = new System.Drawing.Point(21, 128);
+            this.pressure.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pressure.Location = new System.Drawing.Point(21, 157);
             this.pressure.Name = "pressure";
-            this.pressure.Size = new System.Drawing.Size(46, 44);
+            this.pressure.Size = new System.Drawing.Size(53, 37);
             this.pressure.TabIndex = 2;
             this.pressure.Text = "--";
             // 
@@ -141,10 +141,10 @@ namespace MeteoraApiTest
             // altitude
             // 
             this.altitude.AutoSize = true;
-            this.altitude.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.altitude.Location = new System.Drawing.Point(21, 54);
+            this.altitude.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.altitude.Location = new System.Drawing.Point(22, 67);
             this.altitude.Name = "altitude";
-            this.altitude.Size = new System.Drawing.Size(46, 44);
+            this.altitude.Size = new System.Drawing.Size(53, 37);
             this.altitude.TabIndex = 0;
             this.altitude.Text = "--";
             // 
@@ -161,22 +161,25 @@ namespace MeteoraApiTest
             // batteryLevel
             // 
             this.batteryLevel.AutoSize = true;
-            this.batteryLevel.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.batteryLevel.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.batteryLevel.Location = new System.Drawing.Point(223, 5);
             this.batteryLevel.Name = "batteryLevel";
-            this.batteryLevel.Size = new System.Drawing.Size(46, 44);
+            this.batteryLevel.Size = new System.Drawing.Size(53, 37);
             this.batteryLevel.TabIndex = 4;
             this.batteryLevel.Text = "--";
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(566, 382);
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ClientSize = new System.Drawing.Size(570, 353);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Name = "Form1";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MinimumSize = new System.Drawing.Size(588, 400);
+            this.Name = "MainForm";
             this.Text = "MeteoraWebApiTest";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
