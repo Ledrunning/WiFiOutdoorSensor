@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MeteoraDesktop.Presenter;
 
@@ -19,5 +20,7 @@ namespace MeteoraDesktop.View
         string BatteryLevel { get; set; }
 
         Task<List<string>> GetData();
+
+        event EventHandler OnLoadForm;
     }
 }

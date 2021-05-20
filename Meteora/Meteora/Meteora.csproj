@@ -46,7 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\TelemetryEventArgs.cs" />
+    <Compile Include="Model\TelemetryDto.cs" />
     <Compile Include="Presenter\MainFormPresenter.cs" />
+    <Compile Include="Service\ITelemetryService.cs" />
+    <Compile Include="Service\TelemetryService.cs" />
     <Compile Include="View\IMainForm.cs" />
     <Compile Include="View\MainForm.cs">
       <SubType>Form</SubType>

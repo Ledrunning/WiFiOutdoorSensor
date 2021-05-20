@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace MeteoraDesktop.View
 {
@@ -37,6 +38,13 @@ namespace MeteoraDesktop.View
         {
             get => batteryLevel.Text;
             set => batteryLevel.Text = value;
+        }
+
+        public event EventHandler OnLoadForm;
+
+        private void OnLoad(object sender, EventArgs e)
+        {
+            OnLoadForm?.Invoke(sender, e);
         }
     }
 }

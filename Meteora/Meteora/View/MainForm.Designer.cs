@@ -190,6 +190,7 @@ namespace MeteoraDesktop.View
             this.MinimumSize = new System.Drawing.Size(588, 400);
             this.Name = "MainForm";
             this.Text = "Meteora";
+            this.Load += new System.EventHandler(this.OnLoad);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
