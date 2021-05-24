@@ -14,10 +14,10 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/google/' }                // <----------- ADDED MIRROR
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
-    }
+   }
 }
 
 task clean(type: Delete) {
