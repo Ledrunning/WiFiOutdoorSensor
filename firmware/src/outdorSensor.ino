@@ -52,6 +52,7 @@ float temperature = 0.0;
 float humidity = 0.0;
 float pressure = 0;
 float altitude = 0;
+float bmpTemperature = 0.0;
 int chargeLevel = 0;
 
 // Create AsyncWebServer object on port 80
@@ -61,7 +62,13 @@ AsyncWebServer server(PORT);
 // The value will quickly become too large for an int to store
 unsigned long previousMillis = 0; // will store last time DHT was updated
 
-float fVoltageMatrix[22][2] = {
+void setup();
+void setupBmp180();
+void readBmp180(float &altitude, float &pressure);
+void readBatteryCharge();
+void loop();
+
+float voltageMatrix[22][2] = {
     {4.2, 100},
     {4.15, 95},
     {4.11, 90},
@@ -143,6 +150,11 @@ const char index_html[] PROGMEM = R"rawliteral(
       <sup class="units">м</sup>
   </p>
   <p>
+      <span class="all-labels">Температура от BMP-180</span>
+      <span id="bmpTemperature" class="data-labels">%BMPTEMPERATURE%</span>
+      <sup class="units">&deg;C</sup>
+  </p>
+  <p>
       <span class="all-labels">Уровень батареи</span>
       <span id="chargeLevel" class="data-labels">%BATTERY_STATUS%</span>
       <sup class="units">%</sup>
@@ -193,6 +205,17 @@ setInterval(function () {
   xhttp.send();
 }, 10000 );
 
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("bmpTemperature").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "/bmpTemperature", true);
+  xhttp.send();
+}, 10000 );
+
  setInterval(function () {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -237,12 +260,16 @@ void setup()
 {
   // Serial port for debugging purposes
   Serial.begin(SERIAL_BAUDRATE);
+  
+  if(!WiFi.config(staticIP, gateway, subnet, dns)){
+    Serial.println("STA Failed to configure");
+  }
 
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi");
-  while (WiFi.status() != WL_CONNECTED)
-  {
+
+  while (WiFi.status() != WL_CONNECTED) {
     delay(CONNECTION_DELAY);
     Serial.println(".");
   }
@@ -273,7 +300,9 @@ void setup()
   server.on("/altitude", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send_P(HTTP_STATUS_OK, "text/plain", String(altitude).c_str());
   });
-
+  server.on("/bmpTemperature", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send_P(HTTP_STATUS_OK, "text/plain", String(bmpTemperature).c_str());
+  });
   server.on("/battery_status", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send_P(HTTP_STATUS_OK, "text/plain", String(chargeLevel).c_str());
   });
@@ -286,16 +315,13 @@ void setup()
   //ESP.deepSleep(SLEEP_TIME_MS * 1000000);
 }
 
-void setupBmp180()
-{
+void setupBmp180(){
   int count = 0;
   // Start reading bmp 180 sensor
-  while (!bmp.begin())
-  {
+  while (!bmp.begin()) {
     count++;
 
-    if (count >= BMP_CONNECTION_ATTEMPT)
-    {
+    if (count >= BMP_CONNECTION_ATTEMPT) {
       Serial.println("Could not find a valid BMP085 sensor, check wiring!");
       count = 0;
       break;
@@ -305,38 +331,33 @@ void setupBmp180()
 }
 
 // Read data from bmp 180 sensor
-void readBmp180(float &altitude, float &pressure)
-{
+void readBmp180(float &altitude, float &pressure, float &bmpTemperature){
   pressure = bmp.readPressure();
   pressure = pressure / 133.3; // from Pa to мм рт
   altitude = bmp.readAltitude();
+  bmpTemperature = bmp.readTemperature();
 }
 
-void readBatteryCharge()
-{
+void readBatteryCharge(){
 
-  int nVoltageRaw = analogRead(A0);
-  float fVoltage = (float)nVoltageRaw * ADC_DELTA;
+  int rawVoltage = analogRead(A0);
+  float currentVoltage = (float)rawVoltage * ADC_DELTA;
 
-  chargeLevel = 100;
+  //chargeLevel = 100;
 
-  for (int i = 20; i >= 0; i--)
-  {
-    if (fVoltageMatrix[i][0] >= fVoltage)
-    {
-      chargeLevel = fVoltageMatrix[i + 1][1];
+  for (int i = 20; i >= 0; i--){
+    if (voltageMatrix[i][0] >= currentVoltage){
+      chargeLevel = voltageMatrix[i + 1][1];
       break;
     }
   }
 }
 
-void loop()
-{
+void loop(){
 
   unsigned long currentMillis = millis();
 
-  if (currentMillis - previousMillis >= DHT_READ_INTERVAL)
-  {
+  if (currentMillis - previousMillis >= DHT_READ_INTERVAL){
     // save the last time you updated the DHT values
     previousMillis = currentMillis; 
 
@@ -347,12 +368,10 @@ void loop()
     //float newT = dht.readTemperature(true);
 
     // if temperature read failed, don't change t value
-    if (isnan(newTemperature))
-    {
+    if (isnan(newTemperature)){
       Serial.println("Failed to read from DHT sensor!");
     }
-    else
-    {
+    else{
       temperature = newTemperature;
       Serial.println(temperature);
     }
@@ -361,21 +380,21 @@ void loop()
     float newHumidity = dht.readHumidity();
 
     // if humidity read failed, don't change h value
-    if (isnan(newHumidity))
-    {
+    if (isnan(newHumidity)){
       Serial.println("Failed to read from DHT sensor!");
     }
-    else
-    {
+    else{
       humidity = newHumidity;
       Serial.println(humidity);
     }
 
-     readBmp180(altitude, pressure);
+    readBmp180(altitude, pressure, bmpTemperature);
     Serial.println("Altitude:");
     Serial.println(altitude);
     Serial.println("Pressure:");
     Serial.println(pressure);
+    Serial.println("Temperature from BMP:");
+    Serial.println(bmpTemperature);
 
     readBatteryCharge();
     Serial.println("Battery level:");
