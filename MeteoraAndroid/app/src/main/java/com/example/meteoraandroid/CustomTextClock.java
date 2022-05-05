@@ -11,26 +11,26 @@ public class CustomTextClock extends TextClock {
 
     public CustomTextClock(Context context) {
         super(context);
-        setLocaleDateFormat();
+        //setLocaleDateFormat();
         this.setDesigningText();
     }
 
     public CustomTextClock(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setLocaleDateFormat();
+        //setLocaleDateFormat();
         this.setDesigningText();
     }
 
     public CustomTextClock(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setLocaleDateFormat();
+        //setLocaleDateFormat();
         this.setDesigningText();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public CustomTextClock(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        setLocaleDateFormat();
+        //setLocaleDateFormat();
         this.setDesigningText();
     }
 
