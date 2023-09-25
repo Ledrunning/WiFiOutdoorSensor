@@ -13,7 +13,7 @@
 #include <Adafruit_BMP085.h>
 
 #define SERIAL_BAUDRATE 115200
-#define DHTPIN 12 // Digital pin connected to the DHT sensor
+#define DHTPIN 14 // Digital pin connected to the DHT sensor
 #define CONNECTION_DELAY 1000
 #define HTTP_STATUS_OK 200
 
@@ -23,17 +23,25 @@
 //#define DHTTYPE    DHT21     // DHT 21 (AM2301)
 
 // Replace with your network credentials
-const char *ssid = "TP-Link_AF98";
-const char *password = "96767962";
+const char *ssid = "TP-LINK_91FA";
+const char *password = "68783709";
 const uint8_t PORT = 80;
 const short BMP_CONNECTION_ATTEMPT = 5;
 const double ADC_DELTA = 0.00486;
 
+//Static IP address configuration
+IPAddress staticIP(192, 168, 0, 101); //ESP static ip
+IPAddress gateway(192, 168, 0, 1);    //IP Address of your WiFi Router (Gateway)
+IPAddress subnet(255, 255, 255, 0);   //Subnet mask
+IPAddress dns(8, 8, 8, 8);            //DNS
+
+const char *DEVICE_NAME = "weStation";
+
 // Time to sleep (in seconds):
-const int sleepTimeS = 10;
+const int SLEEP_TIME_MS = 10;
 
 // Updates DHT readings every 10 seconds
-const long interval = 10000;
+const long DHT_READ_INTERVAL = 10000;
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -42,8 +50,9 @@ Adafruit_BMP085 bmp;
 // current temperature & humidity, updated in loop()
 float temperature = 0.0;
 float humidity = 0.0;
-int pressure = 0;
-int altitude = 0;
+float pressure = 0;
+float altitude = 0;
+float bmpTemperature = 0.0;
 int chargeLevel = 0;
 
 // Create AsyncWebServer object on port 80
@@ -53,7 +62,13 @@ AsyncWebServer server(PORT);
 // The value will quickly become too large for an int to store
 unsigned long previousMillis = 0; // will store last time DHT was updated
 
-float fVoltageMatrix[22][2] = {
+void setup();
+void setupBmp180();
+void readBmp180(float &altitude, float &pressure);
+void readBatteryCharge();
+void loop();
+
+float voltageMatrix[22][2] = {
     {4.2, 100},
     {4.15, 95},
     {4.11, 90},
@@ -80,70 +95,73 @@ float fVoltageMatrix[22][2] = {
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <meta charset="utf-8">
   <style>
     html {
      font-family: Arial;
      display: inline-block;
      margin: 0px auto;
      text-align: center;
+	 background-color: white;
     }
-    h2 { font-size: 3.0rem; }
-    p { font-size: 3.0rem; }
-    .units { font-size: 1.2rem; }
-    .dht-labels{
+    h2 { 
+		font-size: 3.0rem; 
+		color: #696969;
+	}
+	
+    p { font-size: 2.0rem; }
+	
+    .units { 
+		font-size: 1.2rem; 
+		color: green;
+	}
+    .all-labels{
       font-size: 1.5rem;
       vertical-align:middle;
       padding-bottom: 15px;
+	  color: #696969;
     }
-    .bmp-labels{
-      font-size: 1.5rem;
-      vertical-align:middle;
-      padding-bottom: 15px;
-    }
+	.data-labels {
+		color: green;
+	}
   </style>
 </head>
 <body>
-  <h2>Outdoor meteo probe</h2>
+  <h2>Метеора 1.0 ╔═(███)═╗</h2>
+  <hr />
   <p>
-    <i class="fas fa-thermometer-half" style="color:#059e8a;"></i> 
-    <span class="dht-labels">Temperature</span> 
-    <span id="temperature">23.4</span>
+    <span class="all-labels">Температура</span> 
+    <span id="temperature" class="data-labels">%TEMPERATURE%</span>
     <sup class="units">&deg;C</sup>
   </p>
-
   <p>
-    <i class="fas fa-tint" style="color:#00add6;"></i> 
-    <span class="dht-labels">Humidity</span>
-    <span id="humidity">70.2</span>
+    <span class="all-labels">Влажность</span>
+    <span id="humidity" class="data-labels">%HUMIDITY%</span>
     <sup class="units">%</sup>
   </p>
-
-   <p>
-    <i class="fas fa-weight" style="color:#059e8a;"></i> 
-    <span class="bmp-labels">Pressure</span>
-    <span id="pressure">760</span>
-    <sup class="units">мм рт</sup>
+  <p>
+    <span class="all-labels">Давление</span>
+    <span id="pressure" class="data-labels">%PRESSURE%</span>
+    <sup class="units">мм рс</sup>
   </p>
-
-   <p>
-      <i class="fas fa-arrows-alt-v" style="color:#00add6;"></i>
-      <span class="bmp-labels">Altitude</span>
-      <span id="altitude">150</span>
-      <sup class="units">m</sup>
+  <p>
+      <span class="all-labels">Высота</span>
+      <span id="altitude" class="data-labels">%ALTITUDE%</span>
+      <sup class="units">м</sup>
   </p>
-
-     <p>
-      <i class="fas fa-battery-full"></i>
-      <span class="bmp-labels">Battery level</span>
-      <span id="chargeLevel">68</span>
+  <p>
+      <span class="all-labels">Температура от BMP-180</span>
+      <span id="bmpTemperature" class="data-labels">%BMPTEMPERATURE%</span>
+      <sup class="units">&deg;C</sup>
+  </p>
+  <p>
+      <span class="all-labels">Уровень батареи</span>
+      <span id="chargeLevel" class="data-labels">%BATTERY_STATUS%</span>
       <sup class="units">%</sup>
   </p>
 </body>
-
 <script>
-setInterval(function ( ) {
+setInterval(function () {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -154,7 +172,7 @@ setInterval(function ( ) {
   xhttp.send();
 }, 10000 ) ;
 
-setInterval(function ( ) {
+setInterval(function () {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -165,7 +183,7 @@ setInterval(function ( ) {
   xhttp.send();
 }, 10000 ) ;
 
-setInterval(function ( ) {
+setInterval(function () {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -176,7 +194,7 @@ setInterval(function ( ) {
   xhttp.send();
 }, 10000 );
 
- setInterval(function ( ) {
+ setInterval(function () {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -187,17 +205,27 @@ setInterval(function ( ) {
   xhttp.send();
 }, 10000 );
 
- setInterval(function ( ) {
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("bmpTemperature").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "/bmpTemperature", true);
+  xhttp.send();
+}, 10000 );
+
+ setInterval(function () {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       document.getElementById("chargeLevel").innerHTML = this.responseText;
     }
   };
-  xhttp.open("GET", "/Battery_status", true);
+  xhttp.open("GET", "/battery_status", true);
   xhttp.send();
 }, 10000 );
-
 </script>
 </html>)rawliteral";
 
@@ -232,21 +260,29 @@ void setup()
 {
   // Serial port for debugging purposes
   Serial.begin(SERIAL_BAUDRATE);
-  dht.begin();
+  
+  if(!WiFi.config(staticIP, gateway, subnet, dns)){
+    Serial.println("STA Failed to configure");
+  }
 
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi");
-  while (WiFi.status() != WL_CONNECTED)
-  {
+
+  while (WiFi.status() != WL_CONNECTED) {
     delay(CONNECTION_DELAY);
     Serial.println(".");
   }
 
+  WiFi.hostname(DEVICE_NAME);
+
+  dht.begin();
+
   // Print ESP8266 Local IP Address
   Serial.println(WiFi.localIP());
+  Serial.println(WiFi.hostname());
 
-  //SetupBmp180();
+  setupBmp180();
 
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -264,9 +300,11 @@ void setup()
   server.on("/altitude", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send_P(HTTP_STATUS_OK, "text/plain", String(altitude).c_str());
   });
-
-  server.on("/Battery_status", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(HTTP_STATUS_OK, "text/plain", String(altitude).c_str());
+  server.on("/bmpTemperature", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send_P(HTTP_STATUS_OK, "text/plain", String(bmpTemperature).c_str());
+  });
+  server.on("/battery_status", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send_P(HTTP_STATUS_OK, "text/plain", String(chargeLevel).c_str());
   });
 
   // Start server
@@ -274,19 +312,16 @@ void setup()
 
   // 10 sec in sleep mode
   // NOTICE! Need to connect D0(WAKE)-GPIO16 Pin and RESET both!
-  ESP.deepSleep(sleepTimeS * 1000000);
+  //ESP.deepSleep(SLEEP_TIME_MS * 1000000);
 }
 
-void SetupBmp180()
-{
+void setupBmp180(){
   int count = 0;
   // Start reading bmp 180 sensor
-  while (!bmp.begin())
-  {
+  while (!bmp.begin()) {
     count++;
 
-    if (count >= BMP_CONNECTION_ATTEMPT)
-    {
+    if (count >= BMP_CONNECTION_ATTEMPT) {
       Serial.println("Could not find a valid BMP085 sensor, check wiring!");
       count = 0;
       break;
@@ -296,42 +331,35 @@ void SetupBmp180()
 }
 
 // Read data from bmp 180 sensor
-void readPressure(long &altitude, long &pressure)
-{
+void readBmp180(float &altitude, float &pressure, float &bmpTemperature){
   pressure = bmp.readPressure();
-  pressure = pressure / 133.3; // frop Pa to мм рт
+  pressure = pressure / 133.3; // from Pa to мм рт
   altitude = bmp.readAltitude();
+  bmpTemperature = bmp.readTemperature();
 }
 
-void readBatteryCharge()
-{
+void readBatteryCharge(){
 
-  int nVoltageRaw = analogRead(A0);
-  float fVoltage = (float)nVoltageRaw * ADC_DELTA;
+  int rawVoltage = analogRead(A0);
+  float currentVoltage = (float)rawVoltage * ADC_DELTA;
 
-  chargeLevel = 100;
+  //chargeLevel = 100;
 
-  for (int i = 20; i >= 0; i--)
-  {
-    if (fVoltageMatrix[i][0] >= fVoltage)
-    {
-      chargeLevel = fVoltageMatrix[i + 1][1];
+  for (int i = 20; i >= 0; i--){
+    if (voltageMatrix[i][0] >= currentVoltage){
+      chargeLevel = voltageMatrix[i + 1][1];
       break;
     }
   }
 }
 
-void loop()
-{
-
-  //readPressure(altitude, pressure);
+void loop(){
 
   unsigned long currentMillis = millis();
 
-  if (currentMillis - previousMillis >= interval)
-  {
+  if (currentMillis - previousMillis >= DHT_READ_INTERVAL){
     // save the last time you updated the DHT values
-    previousMillis = currentMillis;
+    previousMillis = currentMillis; 
 
     // Read temperature as Celsius (the default)
     float newTemperature = dht.readTemperature();
@@ -340,12 +368,10 @@ void loop()
     //float newT = dht.readTemperature(true);
 
     // if temperature read failed, don't change t value
-    if (isnan(newTemperature))
-    {
+    if (isnan(newTemperature)){
       Serial.println("Failed to read from DHT sensor!");
     }
-    else
-    {
+    else{
       temperature = newTemperature;
       Serial.println(temperature);
     }
@@ -354,14 +380,24 @@ void loop()
     float newHumidity = dht.readHumidity();
 
     // if humidity read failed, don't change h value
-    if (isnan(newHumidity))
-    {
+    if (isnan(newHumidity)){
       Serial.println("Failed to read from DHT sensor!");
     }
-    else
-    {
+    else{
       humidity = newHumidity;
       Serial.println(humidity);
     }
+
+    readBmp180(altitude, pressure, bmpTemperature);
+    Serial.println("Altitude:");
+    Serial.println(altitude);
+    Serial.println("Pressure:");
+    Serial.println(pressure);
+    Serial.println("Temperature from BMP:");
+    Serial.println(bmpTemperature);
+
+    readBatteryCharge();
+    Serial.println("Battery level:");
+    Serial.println(chargeLevel);
   }
 }
