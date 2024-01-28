@@ -25,6 +25,10 @@ WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring syst
 4. [Android App](#android-app)
 5. [Windows Desktop App](#windows-desktop-app)
 
+  ## UI Layouts
+  
+  ![](meteora.gif)
+
 ---
 
 ## Components
