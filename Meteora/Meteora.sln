@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30804.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meteora", "Meteora\Meteora.csproj", "{197D946D-3F23-45A0-9CA4-B2DC3200A20D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meteora.Esp8266.DataSenderEmulator", "Meteora.Esp8266.DataSenderEmulator\Meteora.Esp8266.DataSenderEmulator.csproj", "{EBC61846-FD18-49AB-890D-D83B9985D991}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{197D946D-3F23-45A0-9CA4-B2DC3200A20D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{197D946D-3F23-45A0-9CA4-B2DC3200A20D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{197D946D-3F23-45A0-9CA4-B2DC3200A20D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBC61846-FD18-49AB-890D-D83B9985D991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBC61846-FD18-49AB-890D-D83B9985D991}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBC61846-FD18-49AB-890D-D83B9985D991}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBC61846-FD18-49AB-890D-D83B9985D991}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
