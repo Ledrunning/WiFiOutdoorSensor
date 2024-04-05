@@ -46,8 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts\IHttpServerService.cs" />
-    <Compile Include="HttpServerService.cs" />
+    <Compile Include="Contracts\ITcpServerService.cs" />
+    <Compile Include="Enums\NetworkAdapters.cs" />
+    <Compile Include="Helpers\LocalNetwork.cs" />
+    <Compile Include="TcpServerService.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
