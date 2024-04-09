@@ -2,25 +2,28 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Meteora.Esp8266.DataSenderEmulator.Contracts;
 
 namespace Meteora.Esp8266.DataSenderEmulator
 {
-    public class HttpServerService : IHttpServerService
+    public class TcpServerService : IHttpServerService
     {
+        private readonly string _ipAddress;
+        private readonly int _port;
         private const string WebPage = "index.html";
-        private readonly HttpListener _listener;
+        private readonly TcpListener _listener;
         private int _intervalInSeconds;
         private Timer _timer;
 
-        public HttpServerService(string ipAddress)
+        public TcpServerService(string ipAddress, int port)
         {
-            var absoluteUri = new Uri($"http://192.168.1.102:{8080}").AbsoluteUri;
-            _listener = new HttpListener();
-            _listener.Prefixes.Add(absoluteUri);
-            _listener.Start();
+            _ipAddress = ipAddress;
+            _port = port;
+            var localAddress = IPAddress.Parse(_ipAddress);
+            _listener = new TcpListener(localAddress, _port);
         }
 
         public void ChangeInterval(int newIntervalInSeconds)
@@ -29,37 +32,67 @@ namespace Meteora.Esp8266.DataSenderEmulator
             _timer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(_intervalInSeconds));
         }
 
-        public void Start()
-        {
-            _timer = new Timer(SendHtmlPage, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
-        }
-
         public void Stop()
         {
             _timer?.Dispose();
             _listener?.Stop();
-            _listener?.Close();
         }
 
-        private void SendHtmlPage(object state)
+        private static void HandleClient(TcpClient client)
         {
             try
             {
-                var context = _listener.GetContext();
-                var response = context.Response;
-                var buffer = Encoding.UTF8.GetBytes(GetHtmlContent());
+                var stream = client.GetStream();
+                var reader = new StreamReader(stream);
+                var request = reader.ReadLine();
 
-                response.ContentType = "text/html";
-                response.ContentLength64 = buffer.Length;
-                response.OutputStream.Write(buffer, 0, buffer.Length);
-                response.OutputStream.Close();
+                if (request != null && request.StartsWith("GET"))
+                {
+                    // Construct the HTTP response with HTML content
+                    var htmlContent = GetHtmlContent();
+                    var response = "HTTP/1.1 200 OK\r\n" +
+                                   "Content-Type: text/html\r\n" +
+                                   $"Content-Length: {htmlContent.Length}\r\n" +
+                                   "\r\n" +
+                                   htmlContent;
+
+                    var responseData = Encoding.UTF8.GetBytes(response);
+                    stream.Write(responseData, 0, responseData.Length);
+                    stream.Close();
+                    client.Close();
+                }
+                else
+                {
+                    client.Close();
+                }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($@"Error sending HTML page: {ex.Message}");
+                Debug.WriteLine($"Error handling client request: {ex.Message}");
             }
         }
 
+        public void Start()
+        {
+            try
+            {
+                _listener.Start();
+                Debug.WriteLine($"Server started on {_ipAddress}:{_port}");
+
+                // Accept incoming client connections asynchronously
+                while (true)
+                {
+                    var client = _listener.AcceptTcpClient();
+                    var clientThread = new Thread(() => HandleClient(client));
+                    clientThread.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error starting server: {ex.Message}");
+            }
+        }
+        
         private static string GetHtmlContent()
         {
             try

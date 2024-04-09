@@ -34,7 +34,7 @@ namespace Meteora.Esp8266.DataSenderEmulator
         {
             var currentIpl = GetCurrentIpAddress();
             currentIpLabel.Text = currentIpl;
-            var serverService = new HttpServerService(currentIpl);
+            var serverService = new TcpServerService(currentIpl);
 
             _isRun = !_isRun;
             runButton.Text = _isRun ? "Run" : "Stop";
