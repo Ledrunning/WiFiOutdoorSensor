@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using Meteora.Esp8266.DataSenderEmulator.Enums;
 using Meteora.Esp8266.DataSenderEmulator.Helpers;
@@ -9,10 +8,13 @@ namespace Meteora.Esp8266.DataSenderEmulator
 {
     public partial class MainForm : Form
     {
+        private bool _isRun;
+
         public MainForm()
         {
             InitializeComponent();
             InitializeComboBox();
+            port.KeyPress += OnTextBoxKeyPress;
         }
 
         private void InitializeComboBox()
@@ -28,24 +30,33 @@ namespace Meteora.Esp8266.DataSenderEmulator
             sendTimeouts.DataSource = sendTimeoutsMs;
         }
 
-        private bool _isRun;
+        private void OnTextBoxKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private TcpServerService _serverService;
 
         private void OnRunClick(object sender, EventArgs e)
         {
             var currentIpl = GetCurrentIpAddress();
             currentIpLabel.Text = currentIpl;
-            var serverService = new TcpServerService(currentIpl);
+            int.TryParse(port.Text, out var currentPort);
+            _serverService = new TcpServerService(currentIpl, currentPort);
 
             _isRun = !_isRun;
             runButton.Text = _isRun ? "Run" : "Stop";
 
             if (_isRun)
             {
-                serverService.Start();
+                _serverService.Start();
             }
             else
             {
-                serverService.Stop();
+                _serverService.Stop();
             }
         }
 
@@ -64,6 +75,17 @@ namespace Meteora.Esp8266.DataSenderEmulator
                 default:
                     return LocalNetwork.GetLocalIpAddress();
             }
+        }
+
+        private void OnSendTimeoutsChanged(object sender, EventArgs e)
+        {
+            if (!(sender is ComboBox comboBox))
+            {
+                return;
+            }
+
+            var selectedValue = comboBox.SelectedItem;
+            _serverService?.ChangeInterval((int)selectedValue);
         }
     }
 }

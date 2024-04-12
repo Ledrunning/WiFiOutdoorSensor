@@ -4,18 +4,21 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using Meteora.Esp8266.DataSenderEmulator.Contracts;
 
 namespace Meteora.Esp8266.DataSenderEmulator
 {
     public class TcpServerService : IHttpServerService
     {
-        private readonly string _ipAddress;
-        private readonly int _port;
         private const string WebPage = "index.html";
+        private readonly string _ipAddress;
         private readonly TcpListener _listener;
-        private int _intervalInSeconds;
+        private readonly int _port;
+
+        private string _htmlContent;
+        private int _intervalInMilliseconds;
         private Timer _timer;
 
         public TcpServerService(string ipAddress, int port)
@@ -24,40 +27,59 @@ namespace Meteora.Esp8266.DataSenderEmulator
             _port = port;
             var localAddress = IPAddress.Parse(_ipAddress);
             _listener = new TcpListener(localAddress, _port);
+            GetHtmlContent();
         }
 
-        public void ChangeInterval(int newIntervalInSeconds)
+        public void ChangeInterval(int newIntervalInMilliseconds)
         {
-            _intervalInSeconds = newIntervalInSeconds;
-            _timer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(_intervalInSeconds));
+            _intervalInMilliseconds = newIntervalInMilliseconds;
+            _timer.Interval = _intervalInMilliseconds;
         }
 
         public void Stop()
         {
-            _timer?.Dispose();
+            _timer?.Stop();
             _listener?.Stop();
         }
 
-        private static void HandleClient(TcpClient client)
+        public void Start()
+        {
+            try
+            {
+                _listener.Start();
+                Debug.WriteLine($"Server started on {_ipAddress}:{_port}");
+
+                _timer = new Timer();
+                _timer.Interval = _intervalInMilliseconds;
+                _timer.Elapsed += async (sender, e) => await HandleClientAsync(await _listener.AcceptTcpClientAsync());
+                _timer.AutoReset = true;
+                _timer.Start();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error starting server: {ex.Message}");
+            }
+        }
+
+        private async Task HandleClientAsync(TcpClient client)
         {
             try
             {
                 var stream = client.GetStream();
                 var reader = new StreamReader(stream);
-                var request = reader.ReadLine();
+                var request = await reader.ReadLineAsync();
 
                 if (request != null && request.StartsWith("GET"))
                 {
                     // Construct the HTTP response with HTML content
-                    var htmlContent = GetHtmlContent();
                     var response = "HTTP/1.1 200 OK\r\n" +
                                    "Content-Type: text/html\r\n" +
-                                   $"Content-Length: {htmlContent.Length}\r\n" +
+                                   $"Content-Length: {_htmlContent.Length}\r\n" +
                                    "\r\n" +
-                                   htmlContent;
+                                   _htmlContent;
 
                     var responseData = Encoding.UTF8.GetBytes(response);
-                    stream.Write(responseData, 0, responseData.Length);
+                    await stream.WriteAsync(responseData, 0, responseData.Length);
                     stream.Close();
                     client.Close();
                 }
@@ -72,38 +94,16 @@ namespace Meteora.Esp8266.DataSenderEmulator
             }
         }
 
-        public void Start()
-        {
-            try
-            {
-                _listener.Start();
-                Debug.WriteLine($"Server started on {_ipAddress}:{_port}");
-
-                // Accept incoming client connections asynchronously
-                while (true)
-                {
-                    var client = _listener.AcceptTcpClient();
-                    var clientThread = new Thread(() => HandleClient(client));
-                    clientThread.Start();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error starting server: {ex.Message}");
-            }
-        }
-        
-        private static string GetHtmlContent()
+        private void GetHtmlContent()
         {
             try
             {
                 var fullPath = Path.Combine(Path.GetTempPath(), WebPage);
-                return File.ReadAllText(fullPath);
+                _htmlContent = File.ReadAllText(fullPath);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error reading HTML file: {ex.Message}");
-                return string.Empty;
             }
         }
     }
