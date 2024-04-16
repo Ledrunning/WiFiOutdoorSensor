@@ -5,14 +5,15 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
+using System.Windows.Forms;
 using Meteora.Esp8266.DataSenderEmulator.Contracts;
+using Timer = System.Timers.Timer;
 
 namespace Meteora.Esp8266.DataSenderEmulator
 {
     public class TcpServerService : IHttpServerService
     {
-        private const string WebPage = "index.html";
+        private const string WebPage = @"\WebPageTemplate\index.html";
         private readonly string _ipAddress;
         private readonly TcpListener _listener;
         private readonly int _port;
@@ -98,7 +99,7 @@ namespace Meteora.Esp8266.DataSenderEmulator
         {
             try
             {
-                var fullPath = Path.Combine(Path.GetTempPath(), WebPage);
+                var fullPath = Path.Combine(Application.StartupPath, WebPage);
                 _htmlContent = File.ReadAllText(fullPath);
             }
             catch (Exception ex)

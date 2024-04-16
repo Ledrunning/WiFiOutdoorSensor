@@ -42,21 +42,27 @@ namespace Meteora.Esp8266.DataSenderEmulator
 
         private void OnRunClick(object sender, EventArgs e)
         {
-            var currentIpl = GetCurrentIpAddress();
-            currentIpLabel.Text = currentIpl;
-            int.TryParse(port.Text, out var currentPort);
-            _serverService = new TcpServerService(currentIpl, currentPort);
-
-            _isRun = !_isRun;
-            runButton.Text = _isRun ? "Run" : "Stop";
-
-            if (_isRun)
+            if (int.TryParse(port.Text, out var currentPort))
             {
-                _serverService.Start();
+                var currentIpl = GetCurrentIpAddress();
+                currentIpLabel.Text = currentIpl;
+                _serverService = new TcpServerService(currentIpl, currentPort);
+
+                _isRun = !_isRun;
+                runButton.Text = _isRun ? "Run" : "Stop";
+
+                if (_isRun)
+                {
+                    _serverService.Start();
+                }
+                else
+                {
+                    _serverService.Stop();
+                }
             }
             else
             {
-                _serverService.Stop();
+                MessageBox.Show(@"Enter the Port!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

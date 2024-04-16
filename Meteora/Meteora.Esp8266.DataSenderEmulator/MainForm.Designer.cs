@@ -54,7 +54,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(217, 18);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(39, 20);
+            this.label1.Size = new System.Drawing.Size(31, 16);
             this.label1.TabIndex = 2;
             this.label1.Text = "Port";
             // 
@@ -107,9 +107,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(9, 18);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(73, 16);
+            this.label4.Size = new System.Drawing.Size(133, 20);
             this.label4.TabIndex = 8;
-            this.label4.Text = "IP Address";
+            this.label4.Text = "Network adapter";
             // 
             // port
             // 
