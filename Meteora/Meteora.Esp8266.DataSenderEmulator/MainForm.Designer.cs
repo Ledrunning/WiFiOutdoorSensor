@@ -107,7 +107,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(9, 18);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(133, 20);
+            this.label4.Size = new System.Drawing.Size(106, 16);
             this.label4.TabIndex = 8;
             this.label4.Text = "Network adapter";
             // 
@@ -117,6 +117,7 @@
             this.port.Name = "port";
             this.port.Size = new System.Drawing.Size(125, 22);
             this.port.TabIndex = 10;
+            this.port.Text = "8080";
             // 
             // MainForm
             // 

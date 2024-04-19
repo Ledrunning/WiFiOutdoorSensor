@@ -10,6 +10,8 @@ namespace Meteora.Esp8266.DataSenderEmulator
     {
         private bool _isRun;
 
+        private TcpServerService _serverService;
+
         public MainForm()
         {
             InitializeComponent();
@@ -38,26 +40,35 @@ namespace Meteora.Esp8266.DataSenderEmulator
             }
         }
 
-        private TcpServerService _serverService;
-
         private void OnRunClick(object sender, EventArgs e)
         {
             if (int.TryParse(port.Text, out var currentPort))
             {
                 var currentIpl = GetCurrentIpAddress();
                 currentIpLabel.Text = currentIpl;
-                _serverService = new TcpServerService(currentIpl, currentPort);
 
-                _isRun = !_isRun;
-                runButton.Text = _isRun ? "Run" : "Stop";
-
-                if (_isRun)
+                if (sendTimeouts.SelectedItem != null &&
+                    int.TryParse(sendTimeouts.SelectedItem.ToString(), out var selectedItem))
                 {
-                    _serverService.Start();
+                    _serverService = new TcpServerService(currentIpl, currentPort, selectedItem);
                 }
                 else
                 {
-                    _serverService.Stop();
+                    MessageBox.Show(@"Select a timeout value!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                _isRun = !_isRun;
+                runButton.Text = _isRun ? "Stop" : "Run";
+
+                if (_isRun)
+                {
+                    _serverService?.Start();
+                }
+                else
+                {
+                    currentIpLabel.Text = @"-/-";
+                    _serverService?.Stop();
                 }
             }
             else
@@ -65,6 +76,7 @@ namespace Meteora.Esp8266.DataSenderEmulator
                 MessageBox.Show(@"Enter the Port!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private string GetCurrentIpAddress()
         {

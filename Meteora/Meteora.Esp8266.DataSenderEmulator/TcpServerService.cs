@@ -13,7 +13,7 @@ namespace Meteora.Esp8266.DataSenderEmulator
 {
     public class TcpServerService : IHttpServerService
     {
-        private const string WebPage = @"\WebPageTemplate\index.html";
+        private const string WebPage = "WebPageTemplate\\index.html";
         private readonly string _ipAddress;
         private readonly TcpListener _listener;
         private readonly int _port;
@@ -22,10 +22,11 @@ namespace Meteora.Esp8266.DataSenderEmulator
         private int _intervalInMilliseconds;
         private Timer _timer;
 
-        public TcpServerService(string ipAddress, int port)
+        public TcpServerService(string ipAddress, int port, int intervalInMilliseconds)
         {
             _ipAddress = ipAddress;
             _port = port;
+            _intervalInMilliseconds = intervalInMilliseconds;
             var localAddress = IPAddress.Parse(_ipAddress);
             _listener = new TcpListener(localAddress, _port);
             GetHtmlContent();
@@ -51,7 +52,7 @@ namespace Meteora.Esp8266.DataSenderEmulator
                 Debug.WriteLine($"Server started on {_ipAddress}:{_port}");
 
                 _timer = new Timer();
-                _timer.Interval = _intervalInMilliseconds;
+                _timer.Interval = _intervalInMilliseconds * 1000;
                 _timer.Elapsed += async (sender, e) => await HandleClientAsync(await _listener.AcceptTcpClientAsync());
                 _timer.AutoReset = true;
                 _timer.Start();
