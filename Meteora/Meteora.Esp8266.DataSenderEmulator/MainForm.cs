@@ -10,6 +10,8 @@ namespace Meteora.Esp8266.DataSenderEmulator
     {
         private bool _isRun;
 
+        private TcpServerService _serverService;
+
         public MainForm()
         {
             InitializeComponent();
@@ -38,27 +40,43 @@ namespace Meteora.Esp8266.DataSenderEmulator
             }
         }
 
-        private TcpServerService _serverService;
-
         private void OnRunClick(object sender, EventArgs e)
         {
-            var currentIpl = GetCurrentIpAddress();
-            currentIpLabel.Text = currentIpl;
-            int.TryParse(port.Text, out var currentPort);
-            _serverService = new TcpServerService(currentIpl, currentPort);
-
-            _isRun = !_isRun;
-            runButton.Text = _isRun ? "Run" : "Stop";
-
-            if (_isRun)
+            if (int.TryParse(port.Text, out var currentPort))
             {
-                _serverService.Start();
+                var currentIpl = GetCurrentIpAddress();
+                currentIpLabel.Text = currentIpl;
+
+                if (sendTimeouts.SelectedItem != null &&
+                    int.TryParse(sendTimeouts.SelectedItem.ToString(), out var selectedItem))
+                {
+                    _serverService = new TcpServerService(currentIpl, currentPort, selectedItem);
+                }
+                else
+                {
+                    MessageBox.Show(@"Select a timeout value!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                _isRun = !_isRun;
+                runButton.Text = _isRun ? "Stop" : "Run";
+
+                if (_isRun)
+                {
+                    _serverService?.Start();
+                }
+                else
+                {
+                    currentIpLabel.Text = @"-/-";
+                    _serverService?.Stop();
+                }
             }
             else
             {
-                _serverService.Stop();
+                MessageBox.Show(@"Enter the Port!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private string GetCurrentIpAddress()
         {
