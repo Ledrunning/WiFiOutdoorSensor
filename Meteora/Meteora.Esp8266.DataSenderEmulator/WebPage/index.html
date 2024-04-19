@@ -1,0 +1,135 @@
+<!DOCTYPE HTML><html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    html {
+     font-family: Arial;
+     display: inline-block;
+     margin: 0px auto;
+     text-align: center;
+	 background-color: white;
+    }
+    h2 { 
+		font-size: 3.0rem; 
+		color: #696969;
+	}
+	
+    p { font-size: 2.0rem; }
+	
+    .units { 
+		font-size: 1.2rem; 
+		color: green;
+	}
+    .all-labels{
+      font-size: 1.5rem;
+      vertical-align:middle;
+      padding-bottom: 15px;
+	  color: #696969;
+    }
+	.data-labels {
+		color: green;
+	}
+  </style>
+</head>
+<body>
+  <h2>Метеора 1.0 ╔═(███)═╗</h2>
+  <hr />
+  <p>
+    <span class="all-labels">Температура</span> 
+    <span id="temperature" class="data-labels">22</span>
+    <sup class="units">&deg;C</sup>
+  </p>
+  <p>
+    <span class="all-labels">Влажность</span>
+    <span id="humidity" class="data-labels">59</span>
+    <sup class="units">%</sup>
+  </p>
+  <p>
+    <span class="all-labels">Давление</span>
+    <span id="pressure" class="data-labels">144</span>
+    <sup class="units">мм рс</sup>
+  </p>
+  <p>
+      <span class="all-labels">Высота</span>
+      <span id="altitude" class="data-labels">130</span>
+      <sup class="units">м</sup>
+  </p>
+  <p>
+      <span class="all-labels">Температура от BMP-180</span>
+      <span id="bmpTemperature" class="data-labels">23</span>
+      <sup class="units">&deg;C</sup>
+  </p>
+  <p>
+      <span class="all-labels">Уровень батареи</span>
+      <span id="chargeLevel" class="data-labels">87</span>
+      <sup class="units">%</sup>
+  </p>
+</body>
+<script>
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("temperature").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "/temperature", true);
+  xhttp.send();
+}, 10000 ) ;
+
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("humidity").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "/humidity", true);
+  xhttp.send();
+}, 10000 ) ;
+
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("pressure").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "/pressure", true);
+  xhttp.send();
+}, 10000 );
+
+ setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("altitude").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "/altitude", true);
+  xhttp.send();
+}, 10000 );
+
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("bmpTemperature").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "/bmpTemperature", true);
+  xhttp.send();
+}, 10000 );
+
+ setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("chargeLevel").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "/battery_status", true);
+  xhttp.send();
+}, 10000 );
+</script>
+</html>)

@@ -17,10 +17,11 @@ namespace MeteoraDesktop.Service
         private const int AltitudeIndex = 2;
         private const int PressureIndex = 3;
         private const int BatteryLevelIndex = 4;
-        private readonly List<string> data = new List<string>();
-        private readonly string ipAddress;
+        private readonly List<string> _data = new List<string>();
+        private readonly string _ipAddress;
+        private const short ReadingIntervalMs = 1000;
 
-        private readonly List<string> routings = new List<string>
+        private readonly List<string> _routs = new List<string>
         {
             "/temperature",
             "/humidity",
@@ -29,33 +30,29 @@ namespace MeteoraDesktop.Service
             "/battery_status"
         };
 
-        private readonly TelemetryDto telemetryDto;
-
-        private readonly Timer timer = new Timer();
-
+        private readonly TelemetryDto _telemetryDto;
         public TelemetryService(string ipAddress)
         {
-            this.ipAddress = ipAddress;
-            telemetryDto = new TelemetryDto();
+            _ipAddress = ipAddress;
+            _telemetryDto = new TelemetryDto();
         }
 
         public event TelemetryReceiveEventHandler TelemetryEvent;
-
 
         public async Task ReadDataAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
                 var receivedBuffer = await GetData();
-                telemetryDto.Temperature = receivedBuffer[TemperatureIndex];
-                telemetryDto.Humidity = receivedBuffer[HumidityIndex];
-                telemetryDto.Altitude = receivedBuffer[AltitudeIndex];
-                telemetryDto.Pressure = receivedBuffer[PressureIndex];
-                telemetryDto.BatteryLevel = receivedBuffer[BatteryLevelIndex];
+                _telemetryDto.Temperature = receivedBuffer[TemperatureIndex];
+                _telemetryDto.Humidity = receivedBuffer[HumidityIndex];
+                _telemetryDto.Altitude = receivedBuffer[AltitudeIndex];
+                _telemetryDto.Pressure = receivedBuffer[PressureIndex];
+                _telemetryDto.BatteryLevel = receivedBuffer[BatteryLevelIndex];
 
-                TelemetryEvent?.Invoke(new TelemetryEventArgs(telemetryDto));
+                TelemetryEvent?.Invoke(new TelemetryEventArgs(_telemetryDto));
 
-                await Task.Delay(1000, token);
+                await Task.Delay(ReadingIntervalMs, token);
             }
         }
 
@@ -64,22 +61,22 @@ namespace MeteoraDesktop.Service
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(ipAddress);
+                client.BaseAddress = new Uri(_ipAddress);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                foreach (var page in routings)
+                foreach (var page in _routs)
                 {
                     var response = await client.GetAsync(page);
 
                     if (response.IsSuccessStatusCode)
                     {
                         var telemetry = await response.Content.ReadAsStringAsync();
-                        data.Add(telemetry);
+                        _data.Add(telemetry);
                     }
                 }
 
-                return data;
+                return _data;
             }
         }
     }
