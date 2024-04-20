@@ -134,6 +134,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.runButton);
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Esp8266 DataSenderEmulator";
             this.ResumeLayout(false);
             this.PerformLayout();
