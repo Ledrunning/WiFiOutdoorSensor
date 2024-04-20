@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Meteora.Esp8266.DataSenderEmulator.Contracts;
-using Timer = System.Timers.Timer;
+using Timer = System.Threading.Timer;
 
 namespace Meteora.Esp8266.DataSenderEmulator
 {
@@ -15,47 +15,57 @@ namespace Meteora.Esp8266.DataSenderEmulator
     {
         private const string WebPage = "WebPageTemplate\\index.html";
         private readonly string _ipAddress;
-        private readonly TcpListener _listener;
         private readonly int _port;
+        private readonly Timer _timer;
 
         private string _htmlContent;
-        private int _intervalInMilliseconds;
-        private Timer _timer;
+        private bool _isRunning;
+        private TcpListener _listener;
 
         public TcpServerService(string ipAddress, int port, int intervalInMilliseconds)
         {
             _ipAddress = ipAddress;
             _port = port;
-            _intervalInMilliseconds = intervalInMilliseconds;
-            var localAddress = IPAddress.Parse(_ipAddress);
-            _listener = new TcpListener(localAddress, _port);
+
             GetHtmlContent();
+
+            _timer = new Timer(async _ => await BroadcastHtmlContentAsync(), null, 0, intervalInMilliseconds);
         }
 
         public void ChangeInterval(int newIntervalInMilliseconds)
         {
-            _intervalInMilliseconds = newIntervalInMilliseconds;
-            _timer.Interval = _intervalInMilliseconds;
+            _timer.Change(0, newIntervalInMilliseconds);
         }
 
         public void Stop()
         {
-            _timer?.Stop();
+            if (!_isRunning)
+            {
+                return;
+            }
+
+            _timer?.Dispose();
             _listener?.Stop();
+            _listener = null;
+            _isRunning = false;
+            Debug.WriteLine($"Server stopped on {_ipAddress}:{_port}");
         }
 
         public void Start()
         {
             try
             {
-                _listener.Start();
-                Debug.WriteLine($"Server started on {_ipAddress}:{_port}");
-
-                _timer = new Timer();
-                _timer.Interval = _intervalInMilliseconds * 1000;
-                _timer.Elapsed += async (sender, e) => await HandleClientAsync(await _listener.AcceptTcpClientAsync());
-                _timer.AutoReset = true;
-                _timer.Start();
+                if (!_isRunning)
+                {
+                    _listener = new TcpListener(IPAddress.Parse(_ipAddress), _port);
+                    _listener.Start();
+                    _isRunning = true;
+                    Debug.WriteLine($"Server started on {_ipAddress}:{_port}");
+                }
+                else
+                {
+                    Debug.WriteLine($"Server is already running on {_ipAddress}:{_port}");
+                }
             }
             catch (Exception ex)
             {
@@ -63,36 +73,29 @@ namespace Meteora.Esp8266.DataSenderEmulator
             }
         }
 
-        private async Task HandleClientAsync(TcpClient client)
+        private async Task BroadcastHtmlContentAsync()
         {
             try
             {
-                var stream = client.GetStream();
-                var reader = new StreamReader(stream);
-                var request = await reader.ReadLineAsync();
-
-                if (request != null && request.StartsWith("GET"))
+                if (_isRunning)
                 {
-                    // Construct the HTTP response with HTML content
-                    var response = "HTTP/1.1 200 OK\r\n" +
-                                   "Content-Type: text/html\r\n" +
-                                   $"Content-Length: {_htmlContent.Length}\r\n" +
-                                   "\r\n" +
-                                   _htmlContent;
+                    using (var client = await _listener.AcceptTcpClientAsync())
+                    using (var stream = client.GetStream())
+                    {
+                        var response = "HTTP/1.1 200 OK\r\n" +
+                                       "Content-Type: text/html\r\n" +
+                                       $"Content-Length: {_htmlContent.Length}\r\n" +
+                                       "\r\n" +
+                                       $"{_htmlContent}";
 
-                    var responseData = Encoding.UTF8.GetBytes(response);
-                    await stream.WriteAsync(responseData, 0, responseData.Length);
-                    stream.Close();
-                    client.Close();
-                }
-                else
-                {
-                    client.Close();
+                        var responseData = Encoding.UTF8.GetBytes(response);
+                        await stream.WriteAsync(responseData, 0, responseData.Length);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error handling client request: {ex.Message}");
+                Debug.WriteLine($"Error broadcasting HTML content: {ex.Message}");
             }
         }
 

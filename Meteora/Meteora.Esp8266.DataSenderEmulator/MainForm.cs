@@ -44,25 +44,15 @@ namespace Meteora.Esp8266.DataSenderEmulator
         {
             if (int.TryParse(port.Text, out var currentPort))
             {
-                var currentIpl = GetCurrentIpAddress();
-                currentIpLabel.Text = currentIpl;
-
-                if (sendTimeouts.SelectedItem != null &&
-                    int.TryParse(sendTimeouts.SelectedItem.ToString(), out var selectedItem))
-                {
-                    _serverService = new TcpServerService(currentIpl, currentPort, selectedItem);
-                }
-                else
-                {
-                    MessageBox.Show(@"Select a timeout value!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
                 _isRun = !_isRun;
                 runButton.Text = _isRun ? "Stop" : "Run";
 
                 if (_isRun)
                 {
+                    if (CreateServer(currentPort))
+                    {
+                        return;
+                    }
                     _serverService?.Start();
                 }
                 else
@@ -75,6 +65,25 @@ namespace Meteora.Esp8266.DataSenderEmulator
             {
                 MessageBox.Show(@"Enter the Port!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private bool CreateServer(int currentPort)
+        {
+            var currentIpl = GetCurrentIpAddress();
+            currentIpLabel.Text = currentIpl;
+
+            if (sendTimeouts.SelectedItem != null &&
+                int.TryParse(sendTimeouts.SelectedItem.ToString(), out var selectedItem))
+            {
+                _serverService = new TcpServerService(currentIpl, currentPort, selectedItem);
+            }
+            else
+            {
+                MessageBox.Show(@"Select a timeout value!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return true;
+            }
+
+            return false;
         }
 
 
