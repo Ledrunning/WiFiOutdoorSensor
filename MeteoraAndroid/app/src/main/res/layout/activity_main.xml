@@ -1,182 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <View
-        android:id="@+id/myRectangleView"
-        android:layout_width="222dp"
-        android:layout_height="445dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/rectangle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/lbTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/ds_digi"
-        android:text="Current time"
-        android:textColor="#000000"
-        android:textSize="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.733" />
-
-    <TextView
-        android:id="@+id/temperature"
-        android:layout_width="200dp"
-        android:layout_height="86dp"
-        android:fontFamily="@font/ds_digi"
-        android:gravity="center_horizontal"
-        android:text="25.3 C"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.086" />
-
+    <!-- Temperature -->
     <TextView
         android:id="@+id/lbTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/ds_digi"
+        android:fontFamily="@font/matrixtypeit"
         android:text="Temp:"
         android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.058"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="45sp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.083" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        android:layout_marginTop="16dp" />
 
     <TextView
-        android:id="@+id/humidity"
-        android:layout_width="200dp"
-        android:layout_height="86dp"
-        android:fontFamily="@font/ds_digi"
-        android:gravity="center_horizontal"
-        android:text="41%"
-        android:textAlignment="center"
+        android:id="@+id/temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/matrixtypeit"
+        android:text="25.3 C"
         android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.246" />
+        android:textSize="35sp"
+        app:layout_constraintTop_toTopOf="@+id/lbTemperature"
+        app:layout_constraintBottom_toBottomOf="@+id/lbTemperature"
+        app:layout_constraintStart_toEndOf="@+id/lbTemperature"
+        app:layout_constraintHorizontal_bias="0.1" />
 
+    <!-- Humidity -->
     <TextView
         android:id="@+id/lbHumidity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/ds_digi"
+        android:fontFamily="@font/matrixtypeit"
         android:text="Hum:"
         android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.059"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.238" />
+        android:textSize="45sp"
+        app:layout_constraintTop_toBottomOf="@id/lbTemperature"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        android:layout_marginTop="16dp" />
 
     <TextView
-        android:id="@+id/pressure"
-        android:layout_width="200dp"
-        android:layout_height="86dp"
-        android:fontFamily="@font/ds_digi"
-        android:gravity="center_horizontal"
-        android:text="760 kPa"
-        android:textAlignment="center"
+        android:id="@+id/humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/matrixtypeit"
+        android:text="41%"
         android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.409" />
+        android:textSize="35sp"
+        app:layout_constraintTop_toBottomOf="@id/temperature"
+        app:layout_constraintBottom_toBottomOf="@+id/lbHumidity"
+        app:layout_constraintStart_toEndOf="@+id/lbHumidity"
+        app:layout_constraintHorizontal_bias="0.1" />
 
+    <!-- Pressure -->
     <TextView
         android:id="@+id/lbPressure"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:fontFamily="@font/ds_digi"
+        android:fontFamily="@font/matrixtypeit"
         android:text="Press:"
         android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/myRectangleView"
-        app:layout_constraintHorizontal_bias="0.06"
+        android:textSize="45sp"
+        app:layout_constraintTop_toBottomOf="@id/lbHumidity"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.395" />
+        app:layout_constraintHorizontal_bias="0.1"
+        android:layout_marginTop="16dp" />
 
+    <!-- Altitude -->
     <TextView
-        android:id="@+id/altitude"
-        android:layout_width="200dp"
-        android:layout_height="86dp"
-        android:fontFamily="@font/ds_digi"
-        android:gravity="center_horizontal"
-        android:text="150 m"
-        android:textAlignment="center"
+        android:id="@+id/pressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:fontFamily="@font/matrixtypeit"
+        android:text="760 kPa"
         android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.57" />
+        android:textSize="35sp"
+        app:layout_constraintBottom_toBottomOf="@+id/lbPressure"
+        app:layout_constraintStart_toEndOf="@+id/lbPressure"
+        app:layout_constraintTop_toBottomOf="@id/humidity"
+        app:layout_constraintVertical_bias="0.744" />
 
     <TextView
         android:id="@+id/lbAltitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/ds_digi"
+        android:fontFamily="@font/matrixtypeit"
         android:text="Alt:"
         android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.56" />
+        android:textSize="45sp"
+        app:layout_constraintTop_toBottomOf="@id/lbPressure"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/matrixtypeit"
+        android:text="150 m"
+        android:textColor="#000000"
+        android:textSize="35sp"
+        app:layout_constraintTop_toBottomOf="@id/pressure"
+        app:layout_constraintBottom_toBottomOf="@+id/lbAltitude"
+        app:layout_constraintStart_toEndOf="@+id/lbAltitude"
+        app:layout_constraintHorizontal_bias="0.1" />
+
+    <!-- Current time -->
+    <TextView
+        android:id="@+id/lbTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/matrixtypeit"
+        android:text="Current time"
+        android:textColor="#000000"
+        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@id/lbAltitude"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="16dp" />
 
     <com.example.meteoraandroid.CustomTextClock
         android:id="@+id/textClock"
-        android:layout_width="306dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="44dp"
-        android:fontFamily="@font/ds_digi"
-        android:format12Hour="@null"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/matrixtypeit"
         android:format24Hour="dd MMM yyyy k:mm"
         android:textAlignment="center"
-        android:textSize="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        android:textSize="35sp"
+        app:layout_constraintTop_toBottomOf="@id/lbTime"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myRectangleView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
