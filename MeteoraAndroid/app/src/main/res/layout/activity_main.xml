@@ -4,179 +4,215 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F5F5"
     tools:context=".MainActivity">
 
-    <View
-        android:id="@+id/myRectangleView"
-        android:layout_width="222dp"
-        android:layout_height="445dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardTemperature"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/iconTemperature"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/thermometer"
+                android:contentDescription="@string/temperature_icon"
+                app:tint="#FF5722" />
+
+            <TextView
+                android:id="@+id/temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="25.3°C"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="@font/matrixtypeit" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardHumidity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardTemperature">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/iconHumidity"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/water_drop"
+                android:contentDescription="@string/humidity_icon"
+                app:tint="#03A9F4" />
+
+            <TextView
+                android:id="@+id/humidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="41%"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="@font/matrixtypeit" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardPressure"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardHumidity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/iconPressure"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/enable"
+                android:contentDescription="@string/pressure_icon"
+                app:tint="#4CAF50" />
+
+            <TextView
+                android:id="@+id/pressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="760 kPa"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="@font/matrixtypeit" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardAltitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardPressure">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/iconAltitude"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/altitude"
+                android:contentDescription="@string/altitude_icon"
+                app:tint="#9C27B0" />
+
+            <TextView
+                android:id="@+id/altitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="150 m"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="@font/matrixtypeit" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardBattLevel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardAltitude">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/iconBattLevel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/battery_charging"
+                android:contentDescription="@string/battery_icon"
+                app:tint="#9C27B0" />
+
+            <TextView
+                android:id="@+id/batteryLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="80%"
+                android:textSize="24sp"
+                android:textColor="#000000"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="@font/matrixtypeit" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1:00 AM"
+        android:textSize="18sp"
+        android:textColor="#757575"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/rectangle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/lbTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/ds_digi"
-        android:text="Current time"
-        android:textColor="#000000"
-        android:textSize="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.733" />
-
-    <TextView
-        android:id="@+id/temperature"
-        android:layout_width="200dp"
-        android:layout_height="86dp"
-        android:fontFamily="@font/ds_digi"
-        android:gravity="center_horizontal"
-        android:text="25.3 C"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.086" />
-
-    <TextView
-        android:id="@+id/lbTemperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/ds_digi"
-        android:text="Temp:"
-        android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.058"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.083" />
-
-    <TextView
-        android:id="@+id/humidity"
-        android:layout_width="200dp"
-        android:layout_height="86dp"
-        android:fontFamily="@font/ds_digi"
-        android:gravity="center_horizontal"
-        android:text="41%"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.246" />
-
-    <TextView
-        android:id="@+id/lbHumidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/ds_digi"
-        android:text="Hum:"
-        android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.059"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.238" />
-
-    <TextView
-        android:id="@+id/pressure"
-        android:layout_width="200dp"
-        android:layout_height="86dp"
-        android:fontFamily="@font/ds_digi"
-        android:gravity="center_horizontal"
-        android:text="760 kPa"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.409" />
-
-    <TextView
-        android:id="@+id/lbPressure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:fontFamily="@font/ds_digi"
-        android:text="Press:"
-        android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/myRectangleView"
-        app:layout_constraintHorizontal_bias="0.06"
+        android:fontFamily="@font/matrixtypeit"
+        app:layout_constraintTop_toBottomOf="@+id/cardBattLevel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.395" />
-
-    <TextView
-        android:id="@+id/altitude"
-        android:layout_width="200dp"
-        android:layout_height="86dp"
-        android:fontFamily="@font/ds_digi"
-        android:gravity="center_horizontal"
-        android:text="150 m"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.805"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.57" />
-
-    <TextView
-        android:id="@+id/lbAltitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/ds_digi"
-        android:text="Alt:"
-        android:textColor="#000000"
-        android:textSize="55dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.56" />
-
-    <com.example.meteoraandroid.CustomTextClock
-        android:id="@+id/textClock"
-        android:layout_width="306dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="44dp"
-        android:fontFamily="@font/ds_digi"
-        android:format12Hour="@null"
-        android:format24Hour="dd MMM yyyy k:mm"
-        android:textAlignment="center"
-        android:textSize="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myRectangleView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
