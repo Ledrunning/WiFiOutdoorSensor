@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Meteora.Android</string>
+    <string name="temperature_icon">Temperature Icon</string>
+    <string name="humidity_icon">Humidity Icon</string>
+    <string name="pressure_icon">Pressure Icon</string>
+    <string name="altitude_icon">Altitude Icon</string>
+    <string name="battery_icon">Battery Icon</string>
 </resources>
