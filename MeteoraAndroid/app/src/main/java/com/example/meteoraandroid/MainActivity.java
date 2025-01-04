@@ -1,82 +1,67 @@
 package com.example.meteoraandroid;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RequestQueue mRequestQueue;
-    private StringRequest mStringRequest;
-    private static final String TAG = MainActivity.class.getName();
-    List<String> routings = Arrays.asList("/temperature", "/humidity", "/altitude", "/pressure", "/battery_status");
-    private String url = "http://192.168.0.101/";
+    private TelemetryService telemetryService;
+    private Handler uiHandler;
+    private TextView temperatureView, humidityView, pressureView, altitudeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        temperatureView = findViewById(R.id.temperature);
+        humidityView = findViewById(R.id.humidity);
+        pressureView = findViewById(R.id.pressure);
+        altitudeView = findViewById(R.id.altitude);
+
+        telemetryService = new TelemetryService(this, "192.168.0.101:8080");
+        uiHandler = new Handler();
+
+        telemetryService.startTelemetryUpdates();
+        startUiUpdates();
     }
 
-    private void sendAndRequestResponse() {
-
-        //RequestQueue initialized
-        mRequestQueue = Volley.newRequestQueue(this);
-
-        //String Request initialized
-        mStringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+    private void startUiUpdates() {
+        uiHandler.postDelayed(new Runnable() {
             @Override
-            public void onResponse(String response) {
-
-                Toast.makeText(getApplicationContext(),"Response :" + response.toString(), Toast.LENGTH_LONG).show();//display the response on screen
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                Log.i(TAG,"Error :" + error.toString());
-            }
-        });
-
-        mRequestQueue.add(mStringRequest);
-    }
-
-
-    /*private void runThread() {
-
-        new Thread() {
             public void run() {
-                while (i++ < 1000) {
-                    try {
-                        runOnUiThread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                btn.setText("#" + i);
-                            }
-                        });
-                        Thread.sleep(300);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                updateUI();
+                uiHandler.postDelayed(this, 1000);
             }
-        }.start();
-    } */
+        }, 1000);
+    }
+
+    private void updateUI() {
+        Map<String, String> telemetryData = telemetryService.getTelemetryData();
+
+        if (telemetryData.containsKey("/temperature")) {
+            temperatureView.setText(String.format("%s C", telemetryData.get("/temperature")));
+        }
+        if (telemetryData.containsKey("/humidity")) {
+            humidityView.setText(String.format("%s %%", telemetryData.get("/humidity")));
+        }
+        if (telemetryData.containsKey("/pressure")) {
+            pressureView.setText(String.format("%s kPa", telemetryData.get("/pressure")));
+        }
+        if (telemetryData.containsKey("/altitude")) {
+            altitudeView.setText(String.format("%s m", telemetryData.get("/altitude")));
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        telemetryService.stopTelemetryUpdates();
+        uiHandler.removeCallbacksAndMessages(null);
+    }
 }
