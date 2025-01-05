@@ -1,0 +1,33 @@
+name: .NET Desktop
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Install Chocolatey
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+      
+      - name: Install .NET Framework 4.8 with Chocolatey
+        run: choco install netfx-4.8 -y
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.0.2
+      
+      - name: Restore NuGet packages
+        run: nuget restore Meteora.sln
+
+      - name: Build solution
+        run: msbuild Meteora.sln /p:Configuration=Release
