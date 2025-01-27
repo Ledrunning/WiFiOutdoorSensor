@@ -11,7 +11,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private TelemetryService telemetryService;
-    private Handler uiHandler;
+    private final Handler uiHandler = new Handler();
     private TextView temperatureView, humidityView, pressureView, altitudeView;
 
     @Override
@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         altitudeView = findViewById(R.id.altitude);
 
         telemetryService = new TelemetryService(this, "192.168.0.101:8080");
-        uiHandler = new Handler();
 
         telemetryService.startTelemetryUpdates();
         startUiUpdates();
@@ -44,18 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI() {
         Map<String, String> telemetryData = telemetryService.getTelemetryData();
 
-        if (telemetryData.containsKey("/temperature")) {
-            temperatureView.setText(String.format("%s C", telemetryData.get("/temperature")));
-        }
-        if (telemetryData.containsKey("/humidity")) {
-            humidityView.setText(String.format("%s %%", telemetryData.get("/humidity")));
-        }
-        if (telemetryData.containsKey("/pressure")) {
-            pressureView.setText(String.format("%s kPa", telemetryData.get("/pressure")));
-        }
-        if (telemetryData.containsKey("/altitude")) {
-            altitudeView.setText(String.format("%s m", telemetryData.get("/altitude")));
-        }
+        temperatureView.setText(String.format("%s C", telemetryData.getOrDefault("/temperature", "--.--")));
+        humidityView.setText(String.format("%s %%", telemetryData.getOrDefault("/humidity", "--")));
+        pressureView.setText(String.format("%s kPa", telemetryData.getOrDefault("/pressure", "---")));
+        altitudeView.setText(String.format("%s m", telemetryData.getOrDefault("/altitude", "---")));
     }
 
     @Override
