@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Meteora.Esp8266.DataSenderEmulator.Contracts;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 using Timer = System.Threading.Timer;
 
 namespace Meteora.Esp8266.DataSenderEmulator
@@ -19,15 +20,18 @@ namespace Meteora.Esp8266.DataSenderEmulator
         private readonly Timer _timer;
 
         private string _htmlContent;
+        private HtmlDocument _htmlDocument;
         private bool _isRunning;
         private TcpListener _listener;
+        private Random _randomizer;
 
         public TcpServerService(string ipAddress, int port, int intervalInMilliseconds)
         {
             _ipAddress = ipAddress;
             _port = port;
-
+            _randomizer = new Random();
             GetHtmlContent();
+            _htmlDocument = new HtmlDocument();
 
             _timer = new Timer(async _ => await BroadcastHtmlContentAsync(), null, 0, intervalInMilliseconds);
         }
@@ -73,8 +77,24 @@ namespace Meteora.Esp8266.DataSenderEmulator
             }
         }
 
+        private string UpdateHtml()
+        {
+            _htmlDocument.LoadHtml(_htmlContent);
+
+            _htmlDocument.GetElementbyId("temperature").InnerHtml = _randomizer.Next(-10, 40).ToString();
+            _htmlDocument.GetElementbyId("humidity").InnerHtml = _randomizer.Next(20, 90).ToString();
+            _htmlDocument.GetElementbyId("pressure").InnerHtml = _randomizer.Next(700, 800).ToString();
+            _htmlDocument.GetElementbyId("altitude").InnerHtml = _randomizer.Next(50, 500).ToString();
+            _htmlDocument.GetElementbyId("bmpTemperature").InnerHtml = _randomizer.Next(-10, 40).ToString();
+            _htmlDocument.GetElementbyId("chargeLevel").InnerHtml = _randomizer.Next(0, 100).ToString();
+
+            return _htmlDocument.DocumentNode.OuterHtml;
+        }
+
         private async Task BroadcastHtmlContentAsync()
         {
+            var updatedHtmlContent = UpdateHtml();
+
             try
             {
                 if (_isRunning)
@@ -84,9 +104,9 @@ namespace Meteora.Esp8266.DataSenderEmulator
                     {
                         var response = "HTTP/1.1 200 OK\r\n" +
                                        "Content-Type: text/html\r\n" +
-                                       $"Content-Length: {_htmlContent.Length}\r\n" +
+                                       $"Content-Length: {updatedHtmlContent.Length}\r\n" +
                                        "\r\n" +
-                                       $"{_htmlContent}";
+                                       $"{updatedHtmlContent}";
 
                         var responseData = Encoding.UTF8.GetBytes(response);
                         await stream.WriteAsync(responseData, 0, responseData.Length);
