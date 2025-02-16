@@ -23,7 +23,7 @@ jobs:
       run: pip install platformio
 
     - name: Build ESP8266 firmware
-      run: pio run -d MeteoraFirmware/
+      run: pio run -d firmware/
       
     - name: Upload firmware artifact
       uses: actions/upload-artifact@v4
