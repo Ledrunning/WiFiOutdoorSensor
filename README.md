@@ -4,6 +4,8 @@ WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring syst
 
 ---
 
+Desktop apps: [![.NET Desktop](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/dotnet-desktop.yml/badge.svg)](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/dotnet-desktop.yml)
+
 ## Features
 
 - **Wireless Communication**: Uses ESP8266 for wireless data transfer.
