@@ -5,6 +5,7 @@ WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring syst
 ---
 
 [![.NET Desktop](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/dotnet-desktop.yml/badge.svg)](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/dotnet-desktop.yml)
+[![Android CI](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/android.yml/badge.svg)](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/android.yml)
 
 ## Features
 
