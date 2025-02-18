@@ -25,7 +25,7 @@ namespace Meteora.Esp8266.DataSenderEmulator
         private TcpListener _listener;
         private Random _randomizer;
 
-        public TcpServerService(string ipAddress, int port, int intervalInMilliseconds)
+        public TcpServerService(string ipAddress, int port, int intervalInSecond)
         {
             _ipAddress = ipAddress;
             _port = port;
@@ -33,7 +33,7 @@ namespace Meteora.Esp8266.DataSenderEmulator
             GetHtmlContent();
             _htmlDocument = new HtmlDocument();
 
-            _timer = new Timer(async _ => await BroadcastHtmlContentAsync(), null, 0, intervalInMilliseconds);
+            _timer = new Timer(async _ => await BroadcastHtmlContentAsync(), null, 0, intervalInSecond * 1000);
         }
 
         public void ChangeInterval(int newIntervalInMilliseconds)
@@ -87,6 +87,8 @@ namespace Meteora.Esp8266.DataSenderEmulator
             _htmlDocument.GetElementbyId("altitude").InnerHtml = _randomizer.Next(50, 500).ToString();
             _htmlDocument.GetElementbyId("bmpTemperature").InnerHtml = _randomizer.Next(-10, 40).ToString();
             _htmlDocument.GetElementbyId("chargeLevel").InnerHtml = _randomizer.Next(0, 100).ToString();
+            
+            var t = _htmlDocument.DocumentNode.OuterHtml;
 
             return _htmlDocument.DocumentNode.OuterHtml;
         }
