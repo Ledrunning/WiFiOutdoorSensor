@@ -93,140 +93,87 @@ float voltageMatrix[22][2] = {
     {0, 0}};
 
 const char index_html[] PROGMEM = R"rawliteral(
-<!DOCTYPE HTML><html>
+<!DOCTYPE HTML>
+<html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
-    html {
-     font-family: Arial;
-     display: inline-block;
-     margin: 0px auto;
-     text-align: center;
-	 background-color: white;
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
     }
-    h2 { 
-		font-size: 3.0rem; 
-		color: #696969;
-	}
-	
-    p { font-size: 2.0rem; }
-	
-    .units { 
-		font-size: 1.2rem; 
-		color: green;
-	}
-    .all-labels{
-      font-size: 1.5rem;
-      vertical-align:middle;
-      padding-bottom: 15px;
-	  color: #696969;
+    .container {
+      max-width: 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: auto;
     }
-	.data-labels {
-		color: green;
-	}
+    h2 {
+      font-size: 24px;
+      color: #333;
+    }
+    .sensor {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #ddd;
+      font-size: 18px;
+    }
+    .sensor:last-child {
+      border-bottom: none;
+    }
+    .icon {
+      font-size: 22px;
+      color: #4CAF50;
+      width: 30px;
+    }
+    .value {
+      font-weight: bold;
+      color: #333;
+    }
   </style>
 </head>
 <body>
-  <h2>Метеора 1.0 ╔═(███)═╗</h2>
-  <hr />
-  <p>
-    <span class="all-labels">Температура</span> 
-    <span id="temperature" class="data-labels">%TEMPERATURE%</span>
-    <sup class="units">&deg;C</sup>
-  </p>
-  <p>
-    <span class="all-labels">Влажность</span>
-    <span id="humidity" class="data-labels">%HUMIDITY%</span>
-    <sup class="units">%</sup>
-  </p>
-  <p>
-    <span class="all-labels">Давление</span>
-    <span id="pressure" class="data-labels">%PRESSURE%</span>
-    <sup class="units">мм рс</sup>
-  </p>
-  <p>
-      <span class="all-labels">Высота</span>
-      <span id="altitude" class="data-labels">%ALTITUDE%</span>
-      <sup class="units">м</sup>
-  </p>
-  <p>
-      <span class="all-labels">Температура от BMP-180</span>
-      <span id="bmpTemperature" class="data-labels">%BMPTEMPERATURE%</span>
-      <sup class="units">&deg;C</sup>
-  </p>
-  <p>
-      <span class="all-labels">Уровень батареи</span>
-      <span id="chargeLevel" class="data-labels">%BATTERY_STATUS%</span>
-      <sup class="units">%</sup>
-  </p>
+  <div class="container">
+    <h2>Метеора 1.0</h2>
+    <div class="sensor"><i class="fas fa-temperature-high icon"></i> Температура <span id="temperature" class="value">%TEMPERATURE% &deg;C</span></div>
+    <div class="sensor"><i class="fas fa-tint icon"></i> Влажность <span id="humidity" class="value">%HUMIDITY%%</span></div>
+    <div class="sensor"><i class="fas fa-tachometer-alt icon"></i> Давление <span id="pressure" class="value">%PRESSURE% мм рс</span></div>
+    <div class="sensor"><i class="fas fa-mountain icon"></i> Высота <span id="altitude" class="value">%ALTITUDE% м</span></div>
+    <div class="sensor"><i class="fas fa-thermometer icon"></i> Темп. BMP-180 <span id="bmpTemperature" class="value">%BMPTEMPERATURE% &deg;C</span></div>
+    <div class="sensor"><i class="fas fa-battery-full icon"></i> Батарея <span id="chargeLevel" class="value">%BATTERY_STATUS%%</span></div>
+  </div>
+
+  <script>
+    function updateData(id, endpoint, suffix = "") {
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById(id).innerHTML = this.responseText + suffix;
+            }
+        };
+        xhttp.open("GET", endpoint, true);
+        xhttp.send();
+     }, 10000);
+    }
+    updateData("temperature", "/temperature", " &deg;C");
+    updateData("humidity", "/humidity", "%");
+    updateData("pressure", "/pressure", " мм рс");
+    updateData("altitude", "/altitude", " м");
+    updateData("bmpTemperature", "/bmpTemperature", " &deg;C");
+    updateData("chargeLevel", "/battery_status", "%");
+
+  </script>
 </body>
-<script>
-setInterval(function () {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("temperature").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("GET", "/temperature", true);
-  xhttp.send();
-}, 10000 ) ;
-
-setInterval(function () {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("humidity").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("GET", "/humidity", true);
-  xhttp.send();
-}, 10000 ) ;
-
-setInterval(function () {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("pressure").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("GET", "/pressure", true);
-  xhttp.send();
-}, 10000 );
-
- setInterval(function () {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("altitude").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("GET", "/altitude", true);
-  xhttp.send();
-}, 10000 );
-
-setInterval(function () {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("bmpTemperature").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("GET", "/bmpTemperature", true);
-  xhttp.send();
-}, 10000 );
-
- setInterval(function () {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("chargeLevel").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("GET", "/battery_status", true);
-  xhttp.send();
-}, 10000 );
-</script>
 </html>)rawliteral";
 
 // Replaces placeholder with sensor values
@@ -248,6 +195,10 @@ String getStringFromRoutings(const String &var)
   else if (var == "ALTITUDE")
   {
     return String(altitude);
+  }
+  else if (var == "BMPTEMPERATURE") 
+  {
+    return String(bmpTemperature);
   }
   else if (var == "BATTERY_STATUS")
   {
