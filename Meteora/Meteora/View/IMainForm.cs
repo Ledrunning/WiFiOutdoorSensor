@@ -19,8 +19,6 @@ namespace MeteoraDesktop.View
 
         string BatteryLevel { get; set; }
 
-        Task<List<string>> GetData();
-
         event EventHandler OnLoadForm;
     }
 }

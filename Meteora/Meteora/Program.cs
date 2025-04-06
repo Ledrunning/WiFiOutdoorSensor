@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using MeteoraDesktop.Presenter;
 using MeteoraDesktop.View;
 
 namespace MeteoraDesktop
@@ -14,7 +15,10 @@ namespace MeteoraDesktop
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            var mainForm = new MainForm();
+            var mainPresenter = new MainFormPresenter(mainForm);
+
+            Application.Run(mainForm);
         }
     }
 }

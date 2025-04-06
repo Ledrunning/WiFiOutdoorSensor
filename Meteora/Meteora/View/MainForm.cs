@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Windows.Forms;
+using MeteoraDesktop.Presenter;
 
 namespace MeteoraDesktop.View
 {
-    public partial class MainForm : Form
+    public partial class MainForm : Form, IMainForm
     {
         public MainForm()
         {
             InitializeComponent();
         }
+
+        public MainFormPresenter Presenter { get; set; }
 
         public string Temperature
         {

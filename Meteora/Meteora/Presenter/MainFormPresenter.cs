@@ -8,7 +8,7 @@ namespace MeteoraDesktop.Presenter
 {
     public class MainFormPresenter
     {
-        private const string BaseAddress = "http://192.168.1.111/";
+        private const string BaseAddress = "http://192.168.1.111:8080/";
         private readonly ITelemetryService _telemetryService;
         private readonly IMainForm _view;
         private CancellationTokenSource _tokenSource;
@@ -41,11 +41,13 @@ namespace MeteoraDesktop.Presenter
 
         private void OnTelemetryReceived(TelemetryEventArgs eventArgs)
         {
-            _view.Altitude = eventArgs.TelemetryDto.Altitude;
-            _view.BatteryLevel = eventArgs.TelemetryDto.BatteryLevel;
-            _view.Humidity = eventArgs.TelemetryDto.Humidity;
-            _view.Pressure = eventArgs.TelemetryDto.Pressure;
-            _view.Temperature = eventArgs.TelemetryDto.Temperature;
+            _view.Altitude = SafeValue(eventArgs.TelemetryDto.Altitude);
+            _view.BatteryLevel = SafeValue(eventArgs.TelemetryDto.BatteryLevel);
+            _view.Humidity = SafeValue(eventArgs.TelemetryDto.Humidity);
+            _view.Pressure = SafeValue(eventArgs.TelemetryDto.Pressure);
+            _view.Temperature = SafeValue(eventArgs.TelemetryDto.Temperature);
         }
+
+        private string SafeValue(string input) => string.IsNullOrWhiteSpace(input) ? "--" : input;
     }
 }
