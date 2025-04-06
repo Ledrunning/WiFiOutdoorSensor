@@ -1,74 +1,82 @@
 <!DOCTYPE HTML>
 <html>
-
 <head>
-    <meta charset="utf-8">
-    <title>Meteora</title>
-    <style>
-        html {
-            background-color: white;
-            display: inline-block;
-            font-family: Arial;
-            margin: 0px auto;
-            text-align: center;
-        }
-
-        h2 {
-            color: #696969;
-            font-size: 3.0rem;
-        }
-
-        p { font-size: 2.0rem; }
-
-        .units {
-            color: green;
-            font-size: 1.2rem;
-        }
-
-        .all-labels {
-            color: #696969;
-            font-size: 1.5rem;
-            padding-bottom: 15px;
-            vertical-align: middle;
-        }
-
-        .data-labels { color: green; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: auto;
+    }
+    h2 {
+      font-size: 24px;
+      color: #333;
+    }
+    .sensor {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #ddd;
+      font-size: 18px;
+    }
+    .sensor:last-child {
+      border-bottom: none;
+    }
+    .icon {
+      font-size: 22px;
+      color: #4CAF50;
+      width: 30px;
+    }
+    .value {
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
 </head>
-
 <body>
-<h2>Meteora 1.0 ╔═(███)═╗</h2>
-<hr/>
-<p>
-    <span class="all-labels">Temperature</span>
-    <span id="temperature" class="data-labels">22</span>
-    <sup class="units">°C</sup>
-</p>
-<p>
-    <span class="all-labels">Humidity</span>
-    <span id="humidity" class="data-labels">59</span>
-    <sup class="units">%</sup>
-</p>
-<p>
-    <span class="all-labels">Pressure</span>
-    <span id="pressure" class="data-labels">144</span>
-    <sup class="units">mm Hg</sup>
-</p>
-<p>
-    <span class="all-labels">Altitude</span>
-    <span id="altitude" class="data-labels">130</span>
-    <sup class="units">m</sup>
-</p>
-<p>
-    <span class="all-labels">BMP-180 Temperature</span>
-    <span id="bmpTemperature" class="data-labels">23</span>
-    <sup class="units">°C</sup>
-</p>
-<p>
-    <span class="all-labels">Battery level</span>
-    <span id="chargeLevel" class="data-labels">87</span>
-    <sup class="units">%</sup>
-</p>
-</body>
+  <div class="container">
+    <h2>Метеора 1.0</h2>
+    <div class="sensor"><i class="fas fa-temperature-high icon"></i> Температура <span id="temperature" class="value">%TEMPERATURE% &deg;C</span></div>
+    <div class="sensor"><i class="fas fa-tint icon"></i> Влажность <span id="humidity" class="value">%HUMIDITY%%</span></div>
+    <div class="sensor"><i class="fas fa-tachometer-alt icon"></i> Давление <span id="pressure" class="value">%PRESSURE% мм рс</span></div>
+    <div class="sensor"><i class="fas fa-mountain icon"></i> Высота <span id="altitude" class="value">%ALTITUDE% м</span></div>
+    <div class="sensor"><i class="fas fa-thermometer icon"></i> Темп. BMP-180 <span id="bmpTemperature" class="value">%BMPTEMPERATURE% &deg;C</span></div>
+    <div class="sensor"><i class="fas fa-battery-full icon"></i> Батарея <span id="chargeLevel" class="value">%BATTERY_STATUS%%</span></div>
+  </div>
 
+  <script>
+    function updateData(id, endpoint, suffix = "") {
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById(id).innerHTML = this.responseText + suffix;
+            }
+        };
+        xhttp.open("GET", endpoint, true);
+        xhttp.send();
+     }, 10000);
+    }
+    updateData("temperature", "/temperature", " &deg;C");
+    updateData("humidity", "/humidity", "%");
+    updateData("pressure", "/pressure", " мм рс");
+    updateData("altitude", "/altitude", " м");
+    updateData("bmpTemperature", "/bmpTemperature", " &deg;C");
+    updateData("chargeLevel", "/battery_status", "%");
+
+  </script>
+</body>
 </html>

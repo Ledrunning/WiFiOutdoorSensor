@@ -3,6 +3,7 @@ package com.example.meteoraandroid;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         pressureView = findViewById(R.id.pressure);
         altitudeView = findViewById(R.id.altitude);
 
-        telemetryService = new TelemetryService(this, "192.168.0.101:8080");
+        telemetryService = new TelemetryService(this, "192.168.1.111:8080");
 
         telemetryService.startTelemetryUpdates();
         startUiUpdates();
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI() {
         Map<String, String> telemetryData = telemetryService.getTelemetryData();
+
+        Toast.makeText(this, telemetryData.toString(), Toast.LENGTH_SHORT).show();
 
         temperatureView.setText(String.format("%s C", telemetryData.getOrDefault("/temperature", "--.--")));
         humidityView.setText(String.format("%s %%", telemetryData.getOrDefault("/humidity", "--")));
