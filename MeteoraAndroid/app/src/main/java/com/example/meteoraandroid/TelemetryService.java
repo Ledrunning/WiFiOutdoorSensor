@@ -3,14 +3,10 @@ package com.example.meteoraandroid;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,23 +42,29 @@ public class TelemetryService {
     }
 
     private void fetchTelemetryData() {
-        String[] endpoints = {"/temperature", "/humidity", "/altitude", "/pressure", "/battery_status"};
+        String[] endpoints = {"/temperature", "/humidity", "/altitude", "/pressure", "/chargeLevel"};
 
         for (String endpoint : endpoints) {
-            StringRequest request = new StringRequest(Request.Method.GET, baseUrl + endpoint,
-                    response -> {
-                        telemetryData.put(endpoint, response);
-                        Log.d(TAG, "Data from " + endpoint + ": " + response);
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, "Error fetching " + endpoint + ": " + error.toString());
-                        }
-                    });
-
-            requestQueue.add(request);
+            sendRequest(endpoint, 0); // Starting from scratch
         }
+    }
+
+    private void sendRequest(String endpoint, int attempt) {
+        StringRequest request = new StringRequest(Request.Method.GET, baseUrl + endpoint,
+                response -> {
+                    telemetryData.put(endpoint, response);
+                    Log.d(TAG, "Data from " + endpoint + ": " + response);
+                },
+                error -> {
+                    Log.e(TAG, "Error fetching " + endpoint + ": " + error.toString());
+                    // Retry in case of an error, if there are no more than 3 attempts.
+                    if (attempt < 3) {
+                        Log.d(TAG, "Retrying " + endpoint + "...");
+                        sendRequest(endpoint, attempt + 1);
+                    }
+                });
+
+        requestQueue.add(request);
     }
 
     public Map<String, String> getTelemetryData() {

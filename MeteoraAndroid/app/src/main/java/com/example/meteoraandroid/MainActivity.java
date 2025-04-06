@@ -3,7 +3,6 @@ package com.example.meteoraandroid;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TelemetryService telemetryService;
     private final Handler uiHandler = new Handler();
-    private TextView temperatureView, humidityView, pressureView, altitudeView;
+    private TextView temperatureView, humidityView, pressureView, altitudeView, batteryLevelView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         humidityView = findViewById(R.id.humidity);
         pressureView = findViewById(R.id.pressure);
         altitudeView = findViewById(R.id.altitude);
+        batteryLevelView = findViewById(R.id.batteryLevel);
 
         telemetryService = new TelemetryService(this, "192.168.1.111:8080");
 
@@ -44,12 +44,11 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI() {
         Map<String, String> telemetryData = telemetryService.getTelemetryData();
 
-        Toast.makeText(this, telemetryData.toString(), Toast.LENGTH_SHORT).show();
-
         temperatureView.setText(String.format("%s C", telemetryData.getOrDefault("/temperature", "--.--")));
         humidityView.setText(String.format("%s %%", telemetryData.getOrDefault("/humidity", "--")));
         pressureView.setText(String.format("%s kPa", telemetryData.getOrDefault("/pressure", "---")));
         altitudeView.setText(String.format("%s m", telemetryData.getOrDefault("/altitude", "---")));
+        batteryLevelView.setText(String.format("%s m", telemetryData.getOrDefault("/chargeLevel", "---")));
     }
 
     @Override
