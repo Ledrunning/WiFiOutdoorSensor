@@ -42,6 +42,8 @@ namespace MeteoraDesktop.View
             this.altitude = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.batteryLevel = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.label4 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -157,11 +159,12 @@ namespace MeteoraDesktop.View
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.batteryLevel);
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.progressBar1);
             this.groupBox3.Font = new System.Drawing.Font("Calibri", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(36, 296);
+            this.groupBox3.Location = new System.Drawing.Point(12, 286);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(496, 49);
+            this.groupBox3.Size = new System.Drawing.Size(460, 67);
             this.groupBox3.TabIndex = 5;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Battery level, %";
@@ -170,11 +173,27 @@ namespace MeteoraDesktop.View
             // 
             this.batteryLevel.AutoSize = true;
             this.batteryLevel.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.batteryLevel.Location = new System.Drawing.Point(223, 5);
+            this.batteryLevel.Location = new System.Drawing.Point(489, 303);
             this.batteryLevel.Name = "batteryLevel";
             this.batteryLevel.Size = new System.Drawing.Size(44, 42);
             this.batteryLevel.TabIndex = 4;
             this.batteryLevel.Text = "--";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(6, 35);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(369, 23);
+            this.progressBar1.TabIndex = 6;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(381, 30);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(64, 28);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "100%";
             // 
             // MainForm
             // 
@@ -182,6 +201,7 @@ namespace MeteoraDesktop.View
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(584, 353);
+            this.Controls.Add(this.batteryLevel);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -200,6 +220,7 @@ namespace MeteoraDesktop.View
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -217,6 +238,8 @@ namespace MeteoraDesktop.View
         private System.Windows.Forms.Label altitude;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label batteryLevel;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

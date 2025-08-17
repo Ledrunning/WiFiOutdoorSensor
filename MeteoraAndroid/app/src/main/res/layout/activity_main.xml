@@ -7,6 +7,7 @@
     android:background="#F5F5F5"
     tools:context=".MainActivity">
 
+    <!-- Температура -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardTemperature"
         android:layout_width="0dp"
@@ -45,6 +46,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- Влажность -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardHumidity"
         android:layout_width="0dp"
@@ -83,6 +85,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- Давление -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardPressure"
         android:layout_width="0dp"
@@ -121,6 +124,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- Высота -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardAltitude"
         android:layout_width="0dp"
@@ -159,6 +163,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- Батарея -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardBattLevel"
         android:layout_width="0dp"
@@ -198,6 +203,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- Часы -->
     <com.example.meteoraandroid.CustomTextClock
         android:id="@+id/textClock"
         android:layout_width="wrap_content"
@@ -211,5 +217,32 @@
         app:layout_constraintTop_toBottomOf="@+id/cardBattLevel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Ввод IP и кнопка -->
+    <LinearLayout
+        android:id="@+id/ipInputContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/textClock"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/ipAddressInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/_192_168_1_111_8080"
+            android:inputType="textUri"
+            android:singleLine="true"/>
+
+        <Button
+            android:id="@+id/connectButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
