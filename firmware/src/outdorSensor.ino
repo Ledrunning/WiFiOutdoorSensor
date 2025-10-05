@@ -18,9 +18,9 @@
 #define HTTP_STATUS_OK 200
 
 // Uncomment the type of sensor in use:
-//#define DHTTYPE    DHT11     // DHT 11
+// #define DHTTYPE    DHT11     // DHT 11
 #define DHTTYPE DHT22 // DHT 22 (AM2302)
-//#define DHTTYPE    DHT21     // DHT 21 (AM2301)
+// #define DHTTYPE    DHT21     // DHT 21 (AM2301)
 
 // Replace with your network credentials
 const char *ssid = "TP-LINK_91FA";
@@ -29,15 +29,15 @@ const uint8_t PORT = 80;
 const short BMP_CONNECTION_ATTEMPT = 5;
 const double ADC_DELTA = 0.00486;
 
-//Static IP address configuration
-IPAddress staticIP(192, 168, 0, 101); //ESP static ip
-IPAddress gateway(192, 168, 0, 1);    //IP Address of your WiFi Router (Gateway)
-IPAddress subnet(255, 255, 255, 0);   //Subnet mask
-IPAddress dns(8, 8, 8, 8);            //DNS
+// Static IP address configuration
+IPAddress staticIP(192, 168, 0, 101); // ESP static ip
+IPAddress gateway(192, 168, 0, 1);    // IP Address of your WiFi Router (Gateway)
+IPAddress subnet(255, 255, 255, 0);   // Subnet mask
+IPAddress dns(8, 8, 8, 8);            // DNS
 
 const char *DEVICE_NAME = "weStation";
 
-// Time to sleep (in seconds):
+// Time to sleep (in ms):
 const int SLEEP_TIME_MS = 10;
 
 // Updates DHT readings every 10 seconds
@@ -96,74 +96,89 @@ const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 400px;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin: auto;
-    }
-    h2 {
-      font-size: 24px;
-      color: #333;
-    }
-    .sensor {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #ddd;
-      font-size: 18px;
-    }
-    .sensor:last-child {
-      border-bottom: none;
-    }
-    .icon {
-      font-size: 22px;
-      color: #4CAF50;
-      width: 30px;
-    }
-    .value {
-      font-weight: bold;
-      color: #333;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #F5F5F5;
+    margin: 0;
+    padding: 16px;
+  }
+  .card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .card i {
+    font-size: 20px;
+    width: 20px;
+  }
+  .card span.value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    margin-left: 16px;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h2>Метеора 1.0</h2>
-    <div class="sensor"><i class="fas fa-temperature-high icon"></i> Температура <span id="temperature" class="value">%TEMPERATURE% &deg;C</span></div>
-    <div class="sensor"><i class="fas fa-tint icon"></i> Влажность <span id="humidity" class="value">%HUMIDITY%%</span></div>
-    <div class="sensor"><i class="fas fa-tachometer-alt icon"></i> Давление <span id="pressure" class="value">%PRESSURE% мм рс</span></div>
-    <div class="sensor"><i class="fas fa-mountain icon"></i> Высота <span id="altitude" class="value">%ALTITUDE% м</span></div>
-    <div class="sensor"><i class="fas fa-thermometer icon"></i> Темп. BMP-180 <span id="bmpTemperature" class="value">%BMPTEMPERATURE% &deg;C</span></div>
-    <div class="sensor"><i class="fas fa-battery-full icon"></i> Батарея <span id="chargeLevel" class="value">%BATTERY_STATUS%%</span></div>
+  <h2>Meteora 1.0</h2>
+
+  <div class="card" style="color:#FF5722;">
+    <i class="fas fa-temperature-high"></i>
+    <span id="temperature" class="value">%TEMPERATURE% &deg;C</span>
+  </div>
+
+  <div class="card" style="color:#03A9F4;">
+    <i class="fas fa-tint"></i>
+    <span id="humidity" class="value">%HUMIDITY%%</span>
+  </div>
+
+  <div class="card" style="color:#4CAF50;">
+    <i class="fas fa-tachometer-alt"></i>
+    <span id="pressure" class="value">%PRESSURE% мм рс</span>
+  </div>
+
+  <div class="card" style="color:#9C27B0;">
+    <i class="fas fa-mountain"></i>
+    <span id="altitude" class="value">%ALTITUDE% м</span>
+  </div>
+
+  <div class="card" style="color:#FF9800;">
+    <i class="fas fa-thermometer"></i>
+    <span id="bmpTemperature" class="value">%BMPTEMPERATURE% &deg;C</span>
+  </div>
+
+  <div class="card" style="color:#607D8B;">
+    <i class="fas fa-battery-full"></i>
+    <span id="chargeLevel" class="value">%BATTERY_STATUS%%</span>
   </div>
 
   <script>
     function updateData(id, endpoint, suffix = "") {
-    setInterval(function () {
+      setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                document.getElementById(id).innerHTML = this.responseText + suffix;
-            }
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById(id).innerHTML = this.responseText + suffix;
+          }
         };
         xhttp.open("GET", endpoint, true);
         xhttp.send();
-     }, 10000);
+      }, 10000);
     }
     updateData("temperature", "/temperature", " &deg;C");
     updateData("humidity", "/humidity", "%");
@@ -171,7 +186,6 @@ const char index_html[] PROGMEM = R"rawliteral(
     updateData("altitude", "/altitude", " м");
     updateData("bmpTemperature", "/bmpTemperature", " &deg;C");
     updateData("chargeLevel", "/battery_status", "%");
-
   </script>
 </body>
 </html>)rawliteral";
@@ -179,7 +193,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 // Replaces placeholder with sensor values
 String getStringFromRoutings(const String &var)
 {
-  //Serial.println(var);
+  // Serial.println(var);
   if (var == "TEMPERATURE")
   {
     return String(temperature);
@@ -196,7 +210,7 @@ String getStringFromRoutings(const String &var)
   {
     return String(altitude);
   }
-  else if (var == "BMPTEMPERATURE") 
+  else if (var == "BMPTEMPERATURE")
   {
     return String(bmpTemperature);
   }
@@ -211,8 +225,9 @@ void setup()
 {
   // Serial port for debugging purposes
   Serial.begin(SERIAL_BAUDRATE);
-  
-  if(!WiFi.config(staticIP, gateway, subnet, dns)){
+
+  if (!WiFi.config(staticIP, gateway, subnet, dns))
+  {
     Serial.println("STA Failed to configure");
   }
 
@@ -220,7 +235,8 @@ void setup()
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi");
 
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(CONNECTION_DELAY);
     Serial.println(".");
   }
@@ -236,43 +252,39 @@ void setup()
   setupBmp180();
 
   // Route for root / web page
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(HTTP_STATUS_OK, "text/html", index_html, getStringFromRoutings);
-  });
-  server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(HTTP_STATUS_OK, "text/plain", String(temperature).c_str());
-  });
-  server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(HTTP_STATUS_OK, "text/plain", String(humidity).c_str());
-  });
-  server.on("/pressure", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(HTTP_STATUS_OK, "text/plain", String(pressure).c_str());
-  });
-  server.on("/altitude", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(HTTP_STATUS_OK, "text/plain", String(altitude).c_str());
-  });
-  server.on("/bmpTemperature", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(HTTP_STATUS_OK, "text/plain", String(bmpTemperature).c_str());
-  });
-  server.on("/battery_status", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(HTTP_STATUS_OK, "text/plain", String(chargeLevel).c_str());
-  });
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send_P(HTTP_STATUS_OK, "text/html", index_html, getStringFromRoutings); });
+  server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send_P(HTTP_STATUS_OK, "text/plain", String(temperature).c_str()); });
+  server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send_P(HTTP_STATUS_OK, "text/plain", String(humidity).c_str()); });
+  server.on("/pressure", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send_P(HTTP_STATUS_OK, "text/plain", String(pressure).c_str()); });
+  server.on("/altitude", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send_P(HTTP_STATUS_OK, "text/plain", String(altitude).c_str()); });
+  server.on("/bmpTemperature", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send_P(HTTP_STATUS_OK, "text/plain", String(bmpTemperature).c_str()); });
+  server.on("/battery_status", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send_P(HTTP_STATUS_OK, "text/plain", String(chargeLevel).c_str()); });
 
   // Start server
   server.begin();
 
   // 10 sec in sleep mode
   // NOTICE! Need to connect D0(WAKE)-GPIO16 Pin and RESET both!
-  //ESP.deepSleep(SLEEP_TIME_MS * 1000000);
+  ESP.deepSleep(SLEEP_TIME_MS * 1000000);
 }
 
-void setupBmp180(){
+void setupBmp180()
+{
   int count = 0;
   // Start reading bmp 180 sensor
-  while (!bmp.begin()) {
+  while (!bmp.begin())
+  {
     count++;
 
-    if (count >= BMP_CONNECTION_ATTEMPT) {
+    if (count >= BMP_CONNECTION_ATTEMPT)
+    {
       Serial.println("Could not find a valid BMP085 sensor, check wiring!");
       count = 0;
       break;
@@ -282,47 +294,55 @@ void setupBmp180(){
 }
 
 // Read data from bmp 180 sensor
-void readBmp180(float &altitude, float &pressure, float &bmpTemperature){
+void readBmp180(float &altitude, float &pressure, float &bmpTemperature)
+{
   pressure = bmp.readPressure();
   pressure = pressure / 133.3; // from Pa to мм рт
   altitude = bmp.readAltitude();
   bmpTemperature = bmp.readTemperature();
 }
 
-void readBatteryCharge(){
+void readBatteryCharge()
+{
 
   int rawVoltage = analogRead(A0);
   float currentVoltage = (float)rawVoltage * ADC_DELTA;
 
-  //chargeLevel = 100;
+  // chargeLevel = 100;
 
-  for (int i = 20; i >= 0; i--){
-    if (voltageMatrix[i][0] >= currentVoltage){
+  for (int i = 20; i >= 0; i--)
+  {
+    if (voltageMatrix[i][0] >= currentVoltage)
+    {
       chargeLevel = voltageMatrix[i + 1][1];
       break;
     }
   }
 }
 
-void loop(){
+void loop()
+{
 
   unsigned long currentMillis = millis();
 
-  if (currentMillis - previousMillis >= DHT_READ_INTERVAL){
+  if (currentMillis - previousMillis >= DHT_READ_INTERVAL)
+  {
     // save the last time you updated the DHT values
-    previousMillis = currentMillis; 
+    previousMillis = currentMillis;
 
     // Read temperature as Celsius (the default)
     float newTemperature = dht.readTemperature();
 
     // Read temperature as Fahrenheit (isFahrenheit = true)
-    //float newT = dht.readTemperature(true);
+    // float newT = dht.readTemperature(true);
 
     // if temperature read failed, don't change t value
-    if (isnan(newTemperature)){
+    if (isnan(newTemperature))
+    {
       Serial.println("Failed to read from DHT sensor!");
     }
-    else{
+    else
+    {
       temperature = newTemperature;
       Serial.println(temperature);
     }
@@ -331,10 +351,12 @@ void loop(){
     float newHumidity = dht.readHumidity();
 
     // if humidity read failed, don't change h value
-    if (isnan(newHumidity)){
+    if (isnan(newHumidity))
+    {
       Serial.println("Failed to read from DHT sensor!");
     }
-    else{
+    else
+    {
       humidity = newHumidity;
       Serial.println(humidity);
     }
