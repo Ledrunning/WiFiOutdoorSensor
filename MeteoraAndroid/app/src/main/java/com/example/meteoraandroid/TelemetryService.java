@@ -2,6 +2,7 @@ package com.example.meteoraandroid;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,7 +31,7 @@ public class TelemetryService {
     public TelemetryService(Context context, String ipAddress) {
         this.baseUrl = "http://" + ipAddress;
         this.requestQueue = Volley.newRequestQueue(context);
-        this.handler = new Handler();
+        this.handler = new Handler(Looper.getMainLooper());
     }
 
     public void startTelemetryUpdates() {

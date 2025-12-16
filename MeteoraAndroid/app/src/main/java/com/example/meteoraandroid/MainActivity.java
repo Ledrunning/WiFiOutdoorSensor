@@ -3,6 +3,7 @@ package com.example.meteoraandroid;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,7 +19,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 public class MainActivity extends AppCompatActivity {
 
     private TelemetryService telemetryService;
-    private final Handler uiHandler = new Handler();
+    private final Handler uiHandler = new Handler(Looper.getMainLooper());
 
     // Chart area
     private LineChart combinedChart;
@@ -28,11 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
     private int timeIndex = 0;
     private static final int MAX_POINTS = 60;
+    private static final int UPDATE_UI_MS = 1000;
 
     // UI elements
     private TextView temperatureView, humidityView, pressureView, altitudeView, batteryLevelView;
     private EditText ipAddressInput;
-    private Button connectButton;
 
     // Settings storage
     private SharedPreferences prefs;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         // IP and connect button initialization
         ipAddressInput = findViewById(R.id.ipAddressInput);
-        connectButton = findViewById(R.id.connectButton);
+        Button connectButton = findViewById(R.id.connectButton);
 
         combinedChart = findViewById(R.id.combinedChart);
         setupChart();
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         prefs = getSharedPreferences("settings", MODE_PRIVATE);
 
         // Load saved IP
-        String savedIp = prefs.getString("ip", "192.168.1.111:8080");
+        String savedIp = prefs.getString("ip", "192.168.1.112:8080");
         ipAddressInput.setText(savedIp);
 
         telemetryService = new TelemetryService(this, savedIp);
@@ -147,9 +148,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 updateUI();
-                uiHandler.postDelayed(this, 1000);
+                uiHandler.postDelayed(this, UPDATE_UI_MS);
             }
-        }, 1000);
+        }, UPDATE_UI_MS);
     }
 
     // Refresh telemetry data
@@ -176,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         batteryLevelView.setText(
-                String.format("%s %%", telemetryData.getOrDefault("/battery_status", "---"))
+                String.format("%s %%", telemetryData.getOrDefault("/chargeLevel", "---"))
         );
 
         if (tempStr != null && humStr != null) {
