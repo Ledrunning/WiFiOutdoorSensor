@@ -30,5 +30,5 @@
     "numeric": "cpp",
     "tuple": "cpp"
   },
-  "cmake.sourceDirectory": "E:/OpenSourceDevelopment/WifiOutdoorMeteoStation/firmware/lib/ESPAsyncWebServer-master"
+  "cmake.ignoreCMakeListsMissing": true,
 }
