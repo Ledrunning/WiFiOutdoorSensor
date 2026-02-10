@@ -260,33 +260,6 @@
             app:layout_constraintTop_toBottomOf="@id/cardBattLevel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-
-        <!-- IP and Connect -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@id/combinedChart"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <EditText
-                android:id="@+id/ipAddressInput"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/_192_168_1_111_8080"
-                android:inputType="textUri"/>
-
-            <Button
-                android:id="@+id/connectButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/connect"/>
-        </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

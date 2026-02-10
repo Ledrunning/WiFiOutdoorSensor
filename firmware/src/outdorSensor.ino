@@ -29,8 +29,8 @@
 #define BATTERY_MATRIX_SIZE 22
 #define BATTERY_MATRIX_LENGHT 2
 
-const char *ssid = "Your_SSID";
-const char *password = "PASSWORD";
+const char *ssid = "Ego_Entertainment";
+const char *password = "36729838";
 const uint8_t PORT = 80;
 const char *DEVICE_NAME = "weStation";
 

@@ -1,13 +1,10 @@
 package com.example.meteoraandroid;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Map;
 import com.github.mikephil.charting.charts.LineChart;
@@ -15,8 +12,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.material.appbar.MaterialToolbar;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     private TelemetryService telemetryService;
     private final Handler uiHandler = new Handler(Looper.getMainLooper());
@@ -32,11 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int UPDATE_UI_MS = 1000;
 
     // UI elements
-    private TextView temperatureView, humidityView, pressureView, altitudeView, batteryLevelView;
-    private EditText ipAddressInput;
-
-    // Settings storage
-    private SharedPreferences prefs;
+    private TextView title, temperatureView, humidityView, pressureView, altitudeView, batteryLevelView;
+    private View connectionStatusIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,65 +42,35 @@ public class MainActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         // TextView initialization
+        title = findViewById(R.id.title);
         temperatureView = findViewById(R.id.temperature);
         humidityView = findViewById(R.id.humidity);
         pressureView = findViewById(R.id.pressure);
         altitudeView = findViewById(R.id.altitude);
         batteryLevelView = findViewById(R.id.batteryLevel);
 
-        // IP and connect button initialization
-        ipAddressInput = findViewById(R.id.ipAddressInput);
-        Button connectButton = findViewById(R.id.connectButton);
-
         combinedChart = findViewById(R.id.combinedChart);
         setupChart();
 
-        // SharedPreferences to save entered IP
-        prefs = getSharedPreferences("settings", MODE_PRIVATE);
+        telemetryService = new TelemetryService(this, "192.168.1.115:8080");
 
-        // Load saved IP
-        String savedIp = prefs.getString("ip", "192.168.1.112:8080");
-        ipAddressInput.setText(savedIp);
-
-        telemetryService = new TelemetryService(this, savedIp);
-        telemetryService.startTelemetryUpdates();
-        startUiUpdates();
-
-        // Connect button handler
-        connectButton.setOnClickListener(v -> {
-            String ip = ipAddressInput.getText().toString().trim();
-
-            if (ip.isEmpty()) {
-                Toast.makeText(this, "Enter IP:", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Stop old service
-            telemetryService.stopTelemetryUpdates();
-
-            // Save IP
-            prefs.edit().putString("ip", ip).apply();
-
-            // Create new service with the new IP
-            telemetryService = new TelemetryService(this, ip);
+        // Delay before the first UI update
+        uiHandler.postDelayed(() -> {
             telemetryService.startTelemetryUpdates();
-
-            Toast.makeText(this, "Connected to " + ip, Toast.LENGTH_SHORT).show();
-        });
+            startUiUpdates();
+        }, 500);
     }
 
     // Chart setup
     private void setupChart() {
-
         tempDataSet = new LineDataSet(null, "Temperature °C");
-        tempDataSet.setColor(0xFFFF5722); // orange color
+        tempDataSet.setColor(0xFFFF5722);
         tempDataSet.setDrawCircles(false);
         tempDataSet.setLineWidth(2f);
 
         humidityDataSet = new LineDataSet(null, "Humidity %");
-        humidityDataSet.setColor(0xFF03A9F4); // blue color
+        humidityDataSet.setColor(0xFF03A9F4);
         humidityDataSet.setDrawCircles(false);
         humidityDataSet.setLineWidth(2f);
 
@@ -113,25 +79,20 @@ public class MainActivity extends AppCompatActivity {
         lineData.addDataSet(humidityDataSet);
 
         combinedChart.setData(lineData);
-
         combinedChart.getDescription().setEnabled(false);
         combinedChart.getLegend().setEnabled(true);
-
         combinedChart.getAxisRight().setEnabled(false);
         combinedChart.getXAxis().setDrawLabels(false);
-
-        combinedChart.getAxisLeft().setTextColor(0xFF757575); // gray #757575
+        combinedChart.getAxisLeft().setTextColor(0xFF757575);
     }
 
     private void addChartEntry(float temperature, float humidity) {
-
         lineData.addEntry(new Entry(timeIndex, temperature), 0);
         lineData.addEntry(new Entry(timeIndex, humidity), 1);
 
         if (tempDataSet.getEntryCount() > MAX_POINTS) {
             tempDataSet.removeFirst();
             humidityDataSet.removeFirst();
-            timeIndex--;
         }
 
         lineData.notifyDataChanged();
@@ -148,7 +109,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 updateUI();
-                uiHandler.postDelayed(this, UPDATE_UI_MS);
+                if (telemetryService != null) {
+                    uiHandler.postDelayed(this, UPDATE_UI_MS);
+                }
             }
         }, UPDATE_UI_MS);
     }
@@ -180,19 +143,56 @@ public class MainActivity extends AppCompatActivity {
                 String.format("%s %%", telemetryData.getOrDefault("/chargeLevel", "---"))
         );
 
-        if (tempStr != null && humStr != null) {
+        updateConnectionStatus();
+
+        // Update the graph only if the data is valid
+        if (tempStr != null && !tempStr.equals("--.--") &&
+                humStr != null && !humStr.equals("--")) {
             try {
                 float temp = Float.parseFloat(tempStr);
                 float hum = Float.parseFloat(humStr);
                 addChartEntry(temp, hum);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Parse error: " + e.getMessage());
+            }
+        }
+    }
+
+    private void updateConnectionStatus() {
+        if (title == null) {
+            Log.e(TAG, "title TextView is NULL!");
+            return;
+        }
+
+        boolean isConnected = telemetryService.isConnected();
+
+        if (isConnected) {
+            title.setText("Meteora 🟢");
+            Log.d(TAG, "🟢 Status: CONNECTED");
+        } else {
+            title.setText("Meteora 🔴");
+            Log.e(TAG, "🔴 Status: DISCONNECTED");
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        telemetryService.stopTelemetryUpdates();
+        if (telemetryService != null) {
+            telemetryService.stopTelemetryUpdates();
+        }
         uiHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "Activity paused");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "Activity resumed");
     }
 }
