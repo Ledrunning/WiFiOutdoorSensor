@@ -40,7 +40,7 @@
 		},
 		{
 			"type": "cppbuild",
-			"label": "C/C++: cl.exe сборка активного файла",
+			"label": "C/C++: cl.exe compilation of the active file",
 			"command": "cl.exe",
 			"args": [
 				"/Zi",
@@ -57,7 +57,7 @@
 				"$msCompile"
 			],
 			"group": "build",
-			"detail": "компилятор: cl.exe"
+			"detail": "compiler: cl.exe"
 		}
 	]
 }

@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         combinedChart = findViewById(R.id.combinedChart);
         setupChart();
 
-        telemetryService = new TelemetryService(this, "192.168.1.115:8080");
+        telemetryService = new TelemetryService(this, "192.168.1.125");
 
         // Delay before the first UI update
         uiHandler.postDelayed(() -> {
@@ -139,9 +139,9 @@ public class MainActivity extends AppCompatActivity {
                 String.format("%s m", telemetryData.getOrDefault("/altitude", "---"))
         );
 
-        batteryLevelView.setText(
-                String.format("%s %%", telemetryData.getOrDefault("/chargeLevel", "---"))
-        );
+        // Add String.format("%s %%", telemetryData.getOrDefault("/chargeLevel", "---"))
+        // If use battery power
+        batteryLevelView.setText(String.format("%s 5V", "DC Power"));
 
         updateConnectionStatus();
 

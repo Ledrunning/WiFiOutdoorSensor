@@ -1,16 +1,14 @@
 /***************************************************************
  * FILENAME: outdorSensor.ino
  * DESCRIPTION: This program for showing external
- *              temperature, humidity, altitude and pressure data.
+ * temperature, humidity, altitude and pressure data.
  * AUTHOR: Osman Mazinov
- * DATE: 08/02/2026
+ * DATE: 17/05/2026
  * MODIFICATION: Mastermind
- * CHANGES: Debug environment, mock data
+ * CHANGES: Fixed line power logic, removed blocking delays and heavy JS polling
  ****************************************************************/
 
-// Outdoor Wi-Fi temperature sensor
-
-#define DEBUG_MODE // Uncomment for fake data
+#define DEBUG_MODE // Comment for real using
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
@@ -25,26 +23,20 @@
 #define DHTPIN 14
 #define DHTTYPE DHT22
 #define HTTP_STATUS_OK 200
-#define CONNECTION_DELAY 1000
-#define BATTERY_MATRIX_SIZE 22
-#define BATTERY_MATRIX_LENGHT 2
+#define CONNECTION_DELAY 500
 
 const char *ssid = "Ego_Entertainment";
 const char *password = "36729838";
 const uint8_t PORT = 80;
 const char *DEVICE_NAME = "weStation";
 
-IPAddress staticIP(192, 168, 1, 115);
+IPAddress staticIP(192, 168, 1, 125);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
 IPAddress dns(8, 8, 8, 8);
 
-const unsigned long LIGHT_SLEEP_DURATION_US = 9000000;
-const long SENSOR_READ_INTERVAL = 10000;
-const u_int8_t MAIN_DELAY_MS = 100;
-const float DIVIDER_K = 4.3;
-const float ADC_REF = 1.0;
-const float ADC_MAX = 1023.0;
+// The optimal polling interval for the cable is 5 seconds
+const long SENSOR_READ_INTERVAL = 5000;
 
 #ifndef DEBUG_MODE
 DHT dht(DHTPIN, DHTTYPE);
@@ -55,7 +47,6 @@ bool dhtAvailable = false;
 bool bmpAvailable = false;
 
 float temperature = 0.0, humidity = 0.0, pressure = 0, altitude = 0, bmpTemperature = 0.0;
-int chargeLevel = 0;
 
 #ifdef DEBUG_MODE
 unsigned long debugCounter = 0;
@@ -63,30 +54,6 @@ unsigned long debugCounter = 0;
 
 AsyncWebServer server(PORT);
 unsigned long previousMillis = 0;
-
-const float VOLTAGE_MATRIX[BATTERY_MATRIX_SIZE][BATTERY_MATRIX_LENGHT] = {
-    {4.2, 100},
-    {4.15, 95},
-    {4.11, 90},
-    {4.08, 85},
-    {4.02, 80},
-    {3.98, 75},
-    {3.95, 70},
-    {3.91, 65},
-    {3.87, 60},
-    {3.85, 55},
-    {3.84, 50},
-    {3.82, 45},
-    {3.80, 40},
-    {3.79, 35},
-    {3.77, 30},
-    {3.75, 25},
-    {3.73, 20},
-    {3.71, 15},
-    {3.69, 10},
-    {3.61, 5},
-    {3.27, 0},
-    {0, 0}};
 
 /************************ Frontend side *************************/
 const char index_html[] PROGMEM = R"rawliteral(
@@ -99,32 +66,11 @@ const char index_html[] PROGMEM = R"rawliteral(
   <style>
     body { font-family: Arial, sans-serif; background-color: #F5F5F5; margin: 0; padding: 16px; }
     h2 { text-align: center; color: #333; }
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-    }
-    .card { 
-      display: flex; 
-      align-items: center; 
-      background: #fff; 
-      border-radius: 12px; 
-      padding: 16px; 
-      margin-bottom: 16px; 
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-    }
+    .container { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; }
+    .card { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .card i { font-size: 20px; width: 24px; text-align: center; }
     .card .value { font-size: 24px; font-weight: bold; margin-left: 16px; }
-    .status { 
-      background: #fff; 
-      border-radius: 12px; 
-      padding: 12px; 
-      margin-bottom: 16px; 
-      text-align: center; 
-      color: #666; 
-      font-size: 14px; 
-    }
+    .status { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 16px; text-align: center; color: #666; font-size: 14px; }
     .debug-badge { background: #ff9800; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; vertical-align: middle; }
   </style>
 </head>
@@ -138,11 +84,12 @@ const char index_html[] PROGMEM = R"rawliteral(
     <div class="card" style="color:#4CAF50;"><i class="fas fa-tachometer-alt"></i><span id="pressure" class="value">%PRESSURE%</span></div>
     <div class="card" style="color:#9C27B0;"><i class="fas fa-mountain"></i><span id="altitude" class="value">%ALTITUDE%</span></div>
     <div class="card" style="color:#FF9800;"><i class="fas fa-thermometer"></i><span id="bmpTemperature" class="value">%BMPTEMPERATURE%</span></div>
-    <div class="card" style="color:#607D8B;"><i class="fas fa-battery-full"></i><span id="chargeLevel" class="value">%BATTERY_STATUS%</span></div>
+    <div class="card" style="color:#4CAF50;"><i class="fas fa-plug"></i><span id="powerStatus">DC 5V (USB)</span></div>
   </div>
 
   <script>
     function fetchValue(id, endpoint, suffix) {
+      // Refresh every 5 seconds to avoid overloading the controller
       setInterval(() => {
         fetch(endpoint)
           .then(r => r.text())
@@ -152,18 +99,16 @@ const char index_html[] PROGMEM = R"rawliteral(
             else el.innerText = val + suffix;
           })
           .catch(err => console.error('Error fetch:', err));
-      }, 10000);
+      }, 5000);
     }
     
     fetch('/status').then(r => r.text()).then(t => document.getElementById('statusText').innerText = t);
     
-    // Run updates
     fetchValue("temperature", "/temperature", " °C");
     fetchValue("humidity", "/humidity", "%");
     fetchValue("pressure", "/pressure", " mmHg");
     fetchValue("altitude", "/altitude", " m");
-    fetchValue("bmpTemperature", "/bmpTemperature", " °C");
-    fetchValue("chargeLevel", "/battery_status", "%");
+    fetchValue("bmpTemperature", "/bmpTemperature", " °C"); 
   </script>
 </body>
 </html>)rawliteral";
@@ -180,8 +125,6 @@ String getStringFromRoutings(const String &var)
     return bmpAvailable ? String(altitude, 0) : "N/A";
   if (var == "BMPTEMPERATURE")
     return bmpAvailable ? String(bmpTemperature, 1) : "N/A";
-  if (var == "BATTERY_STATUS")
-    return String(chargeLevel);
   if (var == "DEBUG_BADGE")
   {
 #ifdef DEBUG_MODE
@@ -193,7 +136,7 @@ String getStringFromRoutings(const String &var)
   return String();
 }
 
-/************** Support functions (configuration and reading) **************/
+/************** Support functions **************/
 void setupBmp180()
 {
 #ifndef DEBUG_MODE
@@ -210,56 +153,43 @@ void setupBmp180()
 #endif
 }
 
-int getBatteryPercent(float v)
-{
-  for (int i = 0; i < BATTERY_MATRIX_SIZE; i++)
-  {
-    if (v >= VOLTAGE_MATRIX[i][0])
-    {
-      return (int)VOLTAGE_MATRIX[i][1];
-    }
-  }
-  return 0;
-}
-
-float readBatteryVoltage()
-{
-  int raw = analogRead(A0);
-  float vadc = raw * (ADC_REF / ADC_MAX); // ADC / 10 bit
-  return vadc * DIVIDER_K;                // (33k+10k)/10k
-}
-
 void setup()
 {
   Serial.begin(SERIAL_BAUDRATE);
+
+  // We forcefully disable any sleep mode; the modem is always in active listening mode
+  WiFi.setSleepMode(WIFI_NONE_SLEEP);
+
   if (!WiFi.config(staticIP, gateway, subnet, dns))
   {
-    Serial.println("Failed to configure Wi Fi connection!");
+    Serial.println("Failed to configure WiFi!");
   }
 
-  // Connect to Wi-Fi
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi");
 
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(CONNECTION_DELAY);
-    Serial.println(".");
+    Serial.print(".");
   }
 
   WiFi.hostname(DEVICE_NAME);
 
-  Serial.println("\n✓ Connected. IP: " + WiFi.localIP().toString());
+  Serial.println("\nConnected. IP: " + WiFi.localIP().toString());
+  Serial.println("The modem is always on (constant power supply)");
 
 #ifdef DEBUG_MODE
   dhtAvailable = true;
   bmpAvailable = true;
+  Serial.println("DEBUG MODE: use mock data");
 #else
   dht.begin();
   setupBmp180();
   dhtAvailable = !isnan(dht.readTemperature());
 #endif
 
+  // endpoints
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send_P(HTTP_STATUS_OK, "text/html", index_html, getStringFromRoutings); });
 
@@ -273,17 +203,17 @@ void setup()
             { request->send(HTTP_STATUS_OK, "text/plain", bmpAvailable ? String(altitude, 0) : "N/A"); });
   server.on("/bmpTemperature", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(HTTP_STATUS_OK, "text/plain", bmpAvailable ? String(bmpTemperature, 1) : "N/A"); });
-  server.on("/battery_status", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(HTTP_STATUS_OK, "text/plain", String(chargeLevel)); });
   server.on("/status", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(HTTP_STATUS_OK, "text/plain", "DHT: " + String(dhtAvailable ? "OK" : "FAIL") + ", BMP: " + String(bmpAvailable ? "OK" : "FAIL")); });
 
   server.begin();
+  Serial.println("Web server started");
 }
 
 void loop()
 {
   unsigned long currentMillis = millis();
+
   if (currentMillis - previousMillis >= SENSOR_READ_INTERVAL)
   {
     previousMillis = currentMillis;
@@ -295,7 +225,6 @@ void loop()
     altitude = 150.0 + sin(debugCounter * 0.02) * 20;
     bmpTemperature = 21.5 + sin(debugCounter * 0.1) * 5;
     pressure = 750 + sin(debugCounter * 0.05) * 10;
-    chargeLevel = 100 - (debugCounter % 20);
 #else
     if (dhtAvailable)
     {
@@ -312,13 +241,9 @@ void loop()
       altitude = bmp.readAltitude();
       bmpTemperature = bmp.readTemperature();
     }
-
-    float current_battery_voltage = readBatteryVoltage();
-    chargeLevel = getBatteryPercent(current_battery_voltage);
-
 #endif
-    Serial.printf("Update: T=%.1f H=%.1f P=%.1f A=%.1f BmpT=%.1f Bat=%d\n", temperature, humidity, pressure, altitude, bmpTemperature, chargeLevel);
+
+    Serial.printf("Update: T=%.1f H=%.1f P=%.1f A=%.1f BmpT=%.1f\n",
+                  temperature, humidity, pressure, altitude, bmpTemperature);
   }
-  WiFi.setSleepMode(WIFI_LIGHT_SLEEP);
-  delay(MAIN_DELAY_MS);
 }

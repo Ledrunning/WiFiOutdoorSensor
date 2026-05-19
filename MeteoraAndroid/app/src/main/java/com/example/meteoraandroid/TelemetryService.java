@@ -41,7 +41,7 @@ public class TelemetryService {
             "/humidity",
             "/pressure",
             "/altitude",
-            "/chargeLevel"
+            //"/chargeLevel"
     };
 
     public TelemetryService(Context context, String ipPort) {
@@ -55,7 +55,7 @@ public class TelemetryService {
         telemetryData.put("/humidity", "--");
         telemetryData.put("/pressure", "---");
         telemetryData.put("/altitude", "---");
-        telemetryData.put("/chargeLevel", "---");
+        // telemetryData.put("/chargeLevel", "---");
     }
 
     public void startTelemetryUpdates() {
