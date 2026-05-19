@@ -1,215 +1,265 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- App bar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#6A00FF"
+        app:titleTextColor="@android:color/transparent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/toolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Meteora • Clock"
+                android:textSize="20sp"
+                android:textColor="@android:color/white"
+                android:fontFamily="@font/matrixtypeit"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <com.example.meteoraandroid.CustomTextClock
+                android:id="@+id/toolbarClock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:format24Hour="HH:mm:ss"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:fontFamily="@font/matrixtypeit"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBaseline_toBaselineOf="@id/toolbarTitle"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
-    tools:context=".MainActivity">
+    android:fillViewport="true"
+    android:background="#F5F5F5">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardTemperature"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Header -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:text="@string/meteora"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/matrixtypeit"
+            android:layout_margin="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageView
-                android:id="@+id/iconTemperature"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/thermometer"
-                android:contentDescription="@string/temperature_icon"
-                app:tint="#FF5722" />
-
-            <TextView
-                android:id="@+id/temperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textColor="#000000"
-                android:layout_marginStart="16dp"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="@font/matrixtypeit" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardHumidity"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardTemperature">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.example.meteoraandroid.CustomTextClock
+            android:id="@+id/textClock"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:format24Hour="HH:mm:ss"
+            android:textSize="18sp"
+            android:fontFamily="@font/matrixtypeit"
+            android:layout_margin="16dp"
+            app:layout_constraintBaseline_toBaselineOf="@id/title"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-            <ImageView
-                android:id="@+id/iconHumidity"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/water_drop"
-                android:contentDescription="@string/humidity_icon"
-                app:tint="#03A9F4" />
-
-            <TextView
-                android:id="@+id/humidity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textColor="#000000"
-                android:layout_marginStart="16dp"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="@font/matrixtypeit" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardPressure"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardHumidity">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Temperature -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardTemperature"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/iconPressure"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/enable"
-                android:contentDescription="@string/pressure_icon"
-                app:tint="#4CAF50" />
-
-            <TextView
-                android:id="@+id/pressure"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textColor="#000000"
-                android:layout_marginStart="16dp"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="@font/matrixtypeit" />
+                android:orientation="horizontal"
+                android:padding="16dp">
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/thermometer"
+                    app:tint="#FF5722"/>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardAltitude"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardPressure">
+                <TextView
+                    android:id="@+id/temperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/matrixtypeit"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Humidity -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardHumidity"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/cardTemperature"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/iconAltitude"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/altitude"
-                android:contentDescription="@string/altitude_icon"
-                app:tint="#9C27B0" />
-
-            <TextView
-                android:id="@+id/altitude"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textColor="#000000"
-                android:layout_marginStart="16dp"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="@font/matrixtypeit" />
+                android:orientation="horizontal"
+                android:padding="16dp">
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/water_drop"
+                    app:tint="#03A9F4"/>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardBattLevel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardAltitude">
+                <TextView
+                    android:id="@+id/humidity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/matrixtypeit"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Pressure -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardPressure"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/cardHumidity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/iconBattLevel"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/battery_charging"
-                android:contentDescription="@string/battery_icon"
-                app:tint="#9C27B0" />
-
-            <TextView
-                android:id="@+id/batteryLevel"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="80%"
-                android:textSize="24sp"
-                android:textColor="#000000"
-                android:layout_marginStart="16dp"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="@font/matrixtypeit" />
+                android:orientation="horizontal"
+                android:padding="16dp">
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/enable"
+                    app:tint="#4CAF50"/>
 
-    <com.example.meteoraandroid.CustomTextClock
-        android:id="@+id/textClock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:format12Hour="@null"
-        android:format24Hour="dd MMM yyyy k:mm:ss"
-        android:textSize="18sp"
-        android:textColor="#757575"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/matrixtypeit"
-        app:layout_constraintTop_toBottomOf="@+id/cardBattLevel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:id="@+id/pressure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/matrixtypeit"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Altitude -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardAltitude"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/cardPressure"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/altitude"
+                    app:tint="#9C27B0"/>
+
+                <TextView
+                    android:id="@+id/altitude"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/matrixtypeit"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Battery -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardBattLevel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/cardAltitude"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/battery_charging"
+                    app:tint="#9C27B0"/>
+
+                <TextView
+                    android:id="@+id/batteryLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/matrixtypeit"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Charts -->
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/combinedChart"
+            android:layout_width="0dp"
+            android:layout_height="220dp"
+            android:layout_margin="16dp"
+            app:layout_constraintTop_toBottomOf="@id/cardBattLevel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using MeteoraDesktop.Events;
 using MeteoraDesktop.Model;
-using Timer = System.Windows.Forms.Timer;
 
 namespace MeteoraDesktop.Service
 {
@@ -17,9 +17,9 @@ namespace MeteoraDesktop.Service
         private const int AltitudeIndex = 2;
         private const int PressureIndex = 3;
         private const int BatteryLevelIndex = 4;
+        private const short ReadingIntervalMs = 1000;
         private readonly List<string> _data = new List<string>();
         private readonly string _ipAddress;
-        private const short ReadingIntervalMs = 1000;
 
         private readonly List<string> _routs = new List<string>
         {
@@ -27,10 +27,11 @@ namespace MeteoraDesktop.Service
             "/humidity",
             "/altitude",
             "/pressure",
-            "/battery_status"
+            "/chargeLevel"
         };
 
         private readonly TelemetryDto _telemetryDto;
+
         public TelemetryService(string ipAddress)
         {
             _ipAddress = ipAddress;
@@ -43,22 +44,35 @@ namespace MeteoraDesktop.Service
         {
             while (!token.IsCancellationRequested)
             {
-                var receivedBuffer = await GetData();
-                _telemetryDto.Temperature = receivedBuffer[TemperatureIndex];
-                _telemetryDto.Humidity = receivedBuffer[HumidityIndex];
-                _telemetryDto.Altitude = receivedBuffer[AltitudeIndex];
-                _telemetryDto.Pressure = receivedBuffer[PressureIndex];
-                _telemetryDto.BatteryLevel = receivedBuffer[BatteryLevelIndex];
+                try
+                {
+                    var receivedBuffer = await GetData();
+                    if (receivedBuffer.Count == 0)
+                    {
+                        throw new Exception("Empty data");
+                    }
 
-                TelemetryEvent?.Invoke(new TelemetryEventArgs(_telemetryDto));
+                    _telemetryDto.Temperature = receivedBuffer[TemperatureIndex];
+                    _telemetryDto.Humidity = receivedBuffer[HumidityIndex];
+                    _telemetryDto.Altitude = receivedBuffer[AltitudeIndex];
+                    _telemetryDto.Pressure = receivedBuffer[PressureIndex];
+                    _telemetryDto.BatteryLevel = receivedBuffer[BatteryLevelIndex];
+
+                    TelemetryEvent?.Invoke(new TelemetryEventArgs(_telemetryDto));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[TelemetryService] Error reading data: {ex.Message}");
+                }
 
                 await Task.Delay(ReadingIntervalMs, token);
             }
         }
 
-
         public async Task<List<string>> GetData()
         {
+            var buffer = new List<string>();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_ipAddress);
@@ -67,17 +81,29 @@ namespace MeteoraDesktop.Service
 
                 foreach (var page in _routs)
                 {
-                    var response = await client.GetAsync(page);
-
-                    if (response.IsSuccessStatusCode)
+                    try
                     {
-                        var telemetry = await response.Content.ReadAsStringAsync();
-                        _data.Add(telemetry);
+                        var response = await client.GetAsync(page);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var telemetry = await response.Content.ReadAsStringAsync();
+                            buffer.Add(telemetry);
+                        }
+                        else
+                        {
+                            buffer.Add("--");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Request error {page}: {ex.Message}");
+                        buffer.Add("--");
                     }
                 }
-
-                return _data;
             }
+
+            return buffer;
         }
     }
 }

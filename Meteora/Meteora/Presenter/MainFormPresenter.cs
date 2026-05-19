@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection.Emit;
 using System.Threading;
 using MeteoraDesktop.Events;
 using MeteoraDesktop.Service;
@@ -9,17 +8,18 @@ namespace MeteoraDesktop.Presenter
 {
     public class MainFormPresenter
     {
-        private const string BaseAddress = "http://192.168.0.101/";
-        private readonly IMainForm view;
-        private readonly ITelemetryService telemetryService;
-        private CancellationTokenSource tokenSource;
+        private const string BaseAddress = "http://192.168.1.125/";
+        private readonly ITelemetryService _telemetryService;
+        private readonly IMainForm _view;
+        private CancellationTokenSource _tokenSource;
 
         public MainFormPresenter(IMainForm view)
         {
-            this.view = view;
+            this._view = view;
             view.Presenter = this;
-            telemetryService = new TelemetryService(BaseAddress);
-            telemetryService.TelemetryEvent += OnTelemetryReceived;
+
+            _telemetryService = new TelemetryService(BaseAddress);
+            _telemetryService.TelemetryEvent += OnTelemetryReceived;
             view.OnLoadForm += ViewOnLoadForm;
         }
 
@@ -30,22 +30,24 @@ namespace MeteoraDesktop.Presenter
 
         private void StartReadData()
         {
-            tokenSource = new CancellationTokenSource();
-            telemetryService.ReadDataAsync(tokenSource.Token);
+            _tokenSource = new CancellationTokenSource();
+            _telemetryService.ReadDataAsync(_tokenSource.Token);
         }
 
         private void StopReadData()
         {
-            tokenSource?.Cancel();
+            _tokenSource?.Cancel();
         }
 
         private void OnTelemetryReceived(TelemetryEventArgs eventArgs)
         {
-            view.Altitude = eventArgs.TelemetryDto.Altitude;
-            view.BatteryLevel = eventArgs.TelemetryDto.BatteryLevel;
-            view.Humidity = eventArgs.TelemetryDto.Humidity;
-            view.Pressure = eventArgs.TelemetryDto.Pressure;
-            view.Temperature = eventArgs.TelemetryDto.Temperature;
+            _view.Altitude = SafeValue(eventArgs.TelemetryDto.Altitude);
+            _view.BatteryLevel = SafeValue(eventArgs.TelemetryDto.BatteryLevel);
+            _view.Humidity = SafeValue(eventArgs.TelemetryDto.Humidity);
+            _view.Pressure = SafeValue(eventArgs.TelemetryDto.Pressure);
+            _view.Temperature = SafeValue(eventArgs.TelemetryDto.Temperature);
         }
+
+        private string SafeValue(string input) => string.IsNullOrWhiteSpace(input) ? "--" : input;
     }
 }

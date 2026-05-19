@@ -43,9 +43,8 @@ public class CustomTextClock extends TextClock {
     protected void onAttachedToWindow() {
         try {
             super.onAttachedToWindow();
-        } catch(Exception e)  {
+        } catch(Exception e) {
+            throw new RuntimeException(e);
         }
     }
-
-    
 }

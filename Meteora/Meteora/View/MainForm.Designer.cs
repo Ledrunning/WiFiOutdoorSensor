@@ -29,6 +29,7 @@ namespace MeteoraDesktop.View
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.temperature = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -41,6 +42,8 @@ namespace MeteoraDesktop.View
             this.altitude = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.batteryLevel = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.label4 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -49,10 +52,10 @@ namespace MeteoraDesktop.View
             // temperature
             // 
             this.temperature.AutoSize = true;
-            this.temperature.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.temperature.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.temperature.Location = new System.Drawing.Point(22, 94);
             this.temperature.Name = "temperature";
-            this.temperature.Size = new System.Drawing.Size(53, 37);
+            this.temperature.Size = new System.Drawing.Size(44, 42);
             this.temperature.TabIndex = 0;
             this.temperature.Text = "--";
             // 
@@ -76,17 +79,17 @@ namespace MeteoraDesktop.View
             this.label2.Font = new System.Drawing.Font("Calibri", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(26, 149);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(130, 29);
+            this.label2.Size = new System.Drawing.Size(121, 28);
             this.label2.TabIndex = 3;
             this.label2.Text = "Humidity, %";
             // 
             // humidity
             // 
             this.humidity.AutoSize = true;
-            this.humidity.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.humidity.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.humidity.Location = new System.Drawing.Point(22, 186);
             this.humidity.Name = "humidity";
-            this.humidity.Size = new System.Drawing.Size(53, 37);
+            this.humidity.Size = new System.Drawing.Size(44, 42);
             this.humidity.TabIndex = 2;
             this.humidity.Text = "--";
             // 
@@ -96,7 +99,7 @@ namespace MeteoraDesktop.View
             this.label1.Font = new System.Drawing.Font("Calibri", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(26, 58);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(164, 29);
+            this.label1.Size = new System.Drawing.Size(154, 28);
             this.label1.TabIndex = 1;
             this.label1.Text = "Temperature, C";
             // 
@@ -120,17 +123,17 @@ namespace MeteoraDesktop.View
             this.label3.Font = new System.Drawing.Font("Calibri", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(21, 147);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(166, 29);
+            this.label3.Size = new System.Drawing.Size(160, 28);
             this.label3.TabIndex = 3;
             this.label3.Text = "Pressure, mm rt";
             // 
             // pressure
             // 
             this.pressure.AutoSize = true;
-            this.pressure.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pressure.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pressure.Location = new System.Drawing.Point(17, 183);
             this.pressure.Name = "pressure";
-            this.pressure.Size = new System.Drawing.Size(53, 37);
+            this.pressure.Size = new System.Drawing.Size(44, 42);
             this.pressure.TabIndex = 2;
             this.pressure.Text = "--";
             // 
@@ -140,27 +143,28 @@ namespace MeteoraDesktop.View
             this.label5.Font = new System.Drawing.Font("Calibri", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(22, 56);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(124, 29);
+            this.label5.Size = new System.Drawing.Size(117, 28);
             this.label5.TabIndex = 1;
             this.label5.Text = "Altitude, M";
             // 
             // altitude
             // 
             this.altitude.AutoSize = true;
-            this.altitude.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.altitude.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.altitude.Location = new System.Drawing.Point(18, 93);
             this.altitude.Name = "altitude";
-            this.altitude.Size = new System.Drawing.Size(53, 37);
+            this.altitude.Size = new System.Drawing.Size(44, 42);
             this.altitude.TabIndex = 0;
             this.altitude.Text = "--";
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.batteryLevel);
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.progressBar1);
             this.groupBox3.Font = new System.Drawing.Font("Calibri", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(36, 296);
+            this.groupBox3.Location = new System.Drawing.Point(12, 286);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(496, 49);
+            this.groupBox3.Size = new System.Drawing.Size(460, 67);
             this.groupBox3.TabIndex = 5;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Battery level, %";
@@ -168,12 +172,28 @@ namespace MeteoraDesktop.View
             // batteryLevel
             // 
             this.batteryLevel.AutoSize = true;
-            this.batteryLevel.Font = new System.Drawing.Font("DS-Digital", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.batteryLevel.Location = new System.Drawing.Point(223, 5);
+            this.batteryLevel.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.batteryLevel.Location = new System.Drawing.Point(489, 303);
             this.batteryLevel.Name = "batteryLevel";
-            this.batteryLevel.Size = new System.Drawing.Size(53, 37);
+            this.batteryLevel.Size = new System.Drawing.Size(44, 42);
             this.batteryLevel.TabIndex = 4;
             this.batteryLevel.Text = "--";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(6, 35);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(369, 23);
+            this.progressBar1.TabIndex = 6;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(381, 30);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(64, 28);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "100%";
             // 
             // MainForm
             // 
@@ -181,10 +201,12 @@ namespace MeteoraDesktop.View
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(584, 353);
+            this.Controls.Add(this.batteryLevel);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(588, 400);
@@ -198,6 +220,7 @@ namespace MeteoraDesktop.View
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -215,6 +238,8 @@ namespace MeteoraDesktop.View
         private System.Windows.Forms.Label altitude;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label batteryLevel;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

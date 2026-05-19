@@ -20,10 +20,10 @@ namespace Meteora.Esp8266.DataSenderEmulator
         private readonly Timer _timer;
 
         private string _htmlContent;
-        private HtmlDocument _htmlDocument;
+        private readonly HtmlDocument _htmlDocument;
         private bool _isRunning;
         private TcpListener _listener;
-        private Random _randomizer;
+        private readonly Random _randomizer;
 
         public TcpServerService(string ipAddress, int port, int intervalInSecond)
         {
@@ -87,8 +87,6 @@ namespace Meteora.Esp8266.DataSenderEmulator
             _htmlDocument.GetElementbyId("altitude").InnerHtml = _randomizer.Next(50, 500).ToString();
             _htmlDocument.GetElementbyId("bmpTemperature").InnerHtml = _randomizer.Next(-10, 40).ToString();
             _htmlDocument.GetElementbyId("chargeLevel").InnerHtml = _randomizer.Next(0, 100).ToString();
-            
-            var t = _htmlDocument.DocumentNode.OuterHtml;
 
             return _htmlDocument.DocumentNode.OuterHtml;
         }
@@ -104,14 +102,87 @@ namespace Meteora.Esp8266.DataSenderEmulator
                     using (var client = await _listener.AcceptTcpClientAsync())
                     using (var stream = client.GetStream())
                     {
-                        var response = "HTTP/1.1 200 OK\r\n" +
-                                       "Content-Type: text/html\r\n" +
-                                       $"Content-Length: {updatedHtmlContent.Length}\r\n" +
-                                       "\r\n" +
-                                       $"{updatedHtmlContent}";
+                        var requestBuffer = new byte[1024];
+                        var bytesRead = await stream.ReadAsync(requestBuffer, 0, requestBuffer.Length);
 
-                        var responseData = Encoding.UTF8.GetBytes(response);
-                        await stream.WriteAsync(responseData, 0, responseData.Length);
+                        var request = Encoding.UTF8.GetString(requestBuffer, 0, bytesRead);
+
+                        if (request.Contains("GET / HTTP"))
+                        {
+                            var response = "HTTP/1.1 200 OK\r\n" +
+                                           "Content-Type: text/html\r\n" +
+                                           $"Content-Length: {updatedHtmlContent.Length}\r\n" +
+                                           "\r\n" +
+                                           $"{updatedHtmlContent}";
+                            var responseData = Encoding.UTF8.GetBytes(response);
+                            await stream.WriteAsync(responseData, 0, responseData.Length);
+                        }
+                        else if (request.Contains("GET /temperature"))
+                        {
+                            var temperature = _randomizer.Next(-10, 40).ToString();
+                            var response = "HTTP/1.1 200 OK\r\n" +
+                                           "Content-Type: text/plain\r\n" +
+                                           $"Content-Length: {temperature.Length}\r\n" +
+                                           "\r\n" +
+                                           $"{temperature}";
+                            var responseData = Encoding.UTF8.GetBytes(response);
+                            await stream.WriteAsync(responseData, 0, responseData.Length);
+                        }
+                        else if (request.Contains("GET /humidity"))
+                        {
+                            var humidity = _randomizer.Next(20, 90).ToString();
+                            var response = "HTTP/1.1 200 OK\r\n" +
+                                           "Content-Type: text/plain\r\n" +
+                                           $"Content-Length: {humidity.Length}\r\n" +
+                                           "\r\n" +
+                                           $"{humidity}";
+                            var responseData = Encoding.UTF8.GetBytes(response);
+                            await stream.WriteAsync(responseData, 0, responseData.Length);
+                        }
+                        else if (request.Contains("GET /pressure"))
+                        {
+                            var pressure = _randomizer.Next(700, 800).ToString();
+                            var response = "HTTP/1.1 200 OK\r\n" +
+                                           "Content-Type: text/plain\r\n" +
+                                           $"Content-Length: {pressure.Length}\r\n" +
+                                           "\r\n" +
+                                           $"{pressure}";
+                            var responseData = Encoding.UTF8.GetBytes(response);
+                            await stream.WriteAsync(responseData, 0, responseData.Length);
+                        }
+                        else if (request.Contains("GET /altitude"))
+                        {
+                            var altitude = _randomizer.Next(100, 2000).ToString();
+                            var response = "HTTP/1.1 200 OK\r\n" +
+                                           "Content-Type: text/plain\r\n" +
+                                           $"Content-Length: {altitude.Length}\r\n" +
+                                           "\r\n" +
+                                           $"{altitude}";
+                            var responseData = Encoding.UTF8.GetBytes(response);
+                            await stream.WriteAsync(responseData, 0, responseData.Length);
+                        }
+                        else if (request.Contains("GET /bmpTemperature"))
+                        {
+                            var bmpTemperature = _randomizer.Next(500, 800).ToString();
+                            var response = "HTTP/1.1 200 OK\r\n" +
+                                           "Content-Type: text/plain\r\n" +
+                                           $"Content-Length: {bmpTemperature.Length}\r\n" +
+                                           "\r\n" +
+                                           $"{bmpTemperature}";
+                            var responseData = Encoding.UTF8.GetBytes(response);
+                            await stream.WriteAsync(responseData, 0, responseData.Length);
+                        }
+                        else if (request.Contains("GET /chargeLevel"))
+                        {
+                            var chargeLevel = _randomizer.Next(80, 100).ToString();
+                            var response = "HTTP/1.1 200 OK\r\n" +
+                                           "Content-Type: text/plain\r\n" +
+                                           $"Content-Length: {chargeLevel.Length}\r\n" +
+                                           "\r\n" +
+                                           $"{chargeLevel}";
+                            var responseData = Encoding.UTF8.GetBytes(response);
+                            await stream.WriteAsync(responseData, 0, responseData.Length);
+                        }
                     }
                 }
             }
