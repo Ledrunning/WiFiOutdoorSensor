@@ -157,7 +157,7 @@ void setup()
 {
   Serial.begin(SERIAL_BAUDRATE);
 
-  // We forcefully disable any sleep mode; the modem is always in active listening mode
+  // forcefully disable any sleep mode; the modem is always in active listening mode
   WiFi.setSleepMode(WIFI_NONE_SLEEP);
 
   if (!WiFi.config(staticIP, gateway, subnet, dns))

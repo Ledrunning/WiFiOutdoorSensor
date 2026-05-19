@@ -11,10 +11,10 @@ WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring syst
 ## Features
 
 - **Wireless Communication**: Uses ESP8266 for wireless data transfer.
-- **Sensors**: 
+- **Sensors**:
   - BMP180: Measures atmospheric pressure.
   - DHT-22: Monitors outdoor temperature and humidity.
-- **Battery Power Management**: Optimized for prolonged battery life.
+- **DC 5V Power supply**: Simple power connection via USB oder 5V Power Jack.
 - **Web Server with Interface**: Access sensor data remotely via any web browser.
 - **Android Application**: Conveniently view sensor data on-the-go.
 - **Windows Desktop Application**: Access the sensor data from your PC.
@@ -30,12 +30,13 @@ WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring syst
 5. [Windows Desktop App](#windows-desktop-app)
 
 ## UI Layouts
-  
-  ![](meteora.gif)
-  
+
+![](meteora.gif)
+
 ## Hardware side
+
 ![Screenshot](ui_x.png)
-![Screenshot](ui_z.png)  
+![Screenshot](ui_z.png)
 
 ---
 
@@ -51,13 +52,13 @@ WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring syst
 ## Setup Guide
 
 1. **Hardware Setup**:
-    - Connect BMP180 and DHT-22 to ESP8266 following the circuit diagram provided in `docs/circuit_diagram.pdf`.
-    - Attach the battery and ensure connections are secure.
+   - Connect BMP180 and DHT-22 to ESP8266 following the circuit diagram provided in `docs/circuit_diagram.pdf`.
+   - Attach the battery and ensure connections are secure.
 
 2. **Software Configuration**:
-    - Flash the provided firmware to ESP8266.
-    - Configure Wi-Fi settings by editing the `wifi_config.h` file.
-    - Deploy the web server files to a hosting server or locally on ESP8266.
+   - Flash the provided firmware to ESP8266.
+   - Configure Wi-Fi settings by editing the `wifi_config.h` file.
+   - Deploy the web server files to a hosting server or locally on ESP8266.
 
 ---
 
@@ -86,6 +87,10 @@ WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring syst
 
 ---
 
+## TODO
+
+**Battery Power Management**:
+
 ## Contribution
 
 Feel free to contribute to this project. Fork the repository, make your changes, and submit a pull request.
@@ -104,4 +109,4 @@ For issues or feature requests, please open an issue on our GitHub repository.
 
 ---
 
-We hope WiFiOutdoorSensor makes monitoring outdoor conditions convenient for you!
+I hope WiFiOutdoorSensor makes monitoring outdoor conditions convenient for you!
