@@ -8,7 +8,7 @@ namespace MeteoraDesktop.Presenter
 {
     public class MainFormPresenter
     {
-        private const string BaseAddress = "http://192.168.1.111:8080/";
+        private const string BaseAddress = "http://192.168.1.125/";
         private readonly ITelemetryService _telemetryService;
         private readonly IMainForm _view;
         private CancellationTokenSource _tokenSource;

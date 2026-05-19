@@ -6,4 +6,6 @@
     <string name="altitude_icon">Altitude Icon</string>
     <string name="battery_icon">Battery Icon</string>
     <string name="_192_168_1_111_8080">192.168.1.111:8080</string>
+    <string name="connect">Connect</string>
+    <string name="meteora">Meteora </string>
 </resources>
