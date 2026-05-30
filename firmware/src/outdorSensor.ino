@@ -25,8 +25,8 @@
 #define HTTP_STATUS_OK 200
 #define CONNECTION_DELAY 500
 
-const char *ssid = "Ego_Entertainment";
-const char *password = "36729838";
+const char *ssid = "YourSSID";
+const char *password = "YourPassword";
 const uint8_t PORT = 80;
 const char *DEVICE_NAME = "weStation";
 
