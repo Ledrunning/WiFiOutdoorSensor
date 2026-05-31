@@ -62,8 +62,7 @@ ESP8266 (NodeMCU)
 ├─ GPIO14 (D5) → DHT22 Data pin
 ├─ GPIO4 (D2)  → BMP180 SDA (I2C)
 ├─ GPIO5 (D1)  → BMP180 SCL (I2C)
-├─ A0           → Battery voltage divider (100k+100k)
-└─ 5V GND       → Power ground
+└─ 5V GND      → Power ground
 
 Optional Solar Setup:
 [Solar Panel 5V] → [TP4056 Charger] → [18650 Li-Ion] → [3.3V LDO] → [ESP8266]
@@ -337,7 +336,7 @@ WiFiOutdoorSensor/
 
 ```ini
 [env:production]
-# Real sensors, optimized for battery
+# Real sensors and telemetry
 
 [env:debug]
 build_flags = -DDEBUG_MODE
