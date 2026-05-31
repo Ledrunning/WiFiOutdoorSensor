@@ -1,6 +1,6 @@
 # WiFiOutdoorSensor
 
-WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring system. It uses ESP8266 for network communication, BMP180 for barometric pressure measurements, and DHT-22 for temperature and humidity data. Powered by a battery, it's designed to be low-power and can be accessed via a web server, an Android application, or a Windows desktop application.
+WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring system. It uses ESP8266 for network communication, BMP180 for barometric pressure measurements, and DHT-22 for temperature and humidity data. It's can be accessed via a web server, an Android application, or a Windows desktop application.
 
 ## **Full-stack solution:** Hardware -> Firmware -> Web Interface -> Mobile App -> Desktop Application
 
