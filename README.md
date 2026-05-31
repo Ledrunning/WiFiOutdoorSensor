@@ -453,4 +453,4 @@ Whether you're a hobbyist, student, or professional, WiFiOutdoorSensor provides 
 
 ---
 
-**Enjoy building and monitoring! **
+**Enjoy building and monitoring!**
