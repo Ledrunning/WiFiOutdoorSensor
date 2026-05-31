@@ -2,8 +2,7 @@
 
 WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring system. It uses ESP8266 for network communication, BMP180 for barometric pressure measurements, and DHT-22 for temperature and humidity data. Powered by a battery, it's designed to be low-power and can be accessed via a web server, an Android application, or a Windows desktop application.
 
-**Full-stack solution:** Hardware -> Firmware -> Web Interface -> Mobile App -> Desktop Application
----
+## **Full-stack solution:** Hardware -> Firmware -> Web Interface -> Mobile App -> Desktop Application
 
 [![.NET Desktop](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/dotnet-desktop.yml/badge.svg)](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/dotnet-desktop.yml)
 [![Android CI](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/android.yml/badge.svg)](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/android.yml)
@@ -36,21 +35,23 @@ WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring syst
 **Android App**: Monitor data from anywhere within Wi-Fi range  
 **Windows Desktop App**: Real-time monitoring on your PC  
 **Debug Mode**: Mock data for testing without physical sensors  
-**Professional CI/CD**: Automated builds for all platforms  
+**Professional CI/CD**: Automated builds for all platforms
 
 ---
 
 ## Hardware
 
+![Windows App](img/ui_x.png)
+
 ### Specifications
 
-| Component | Model | Function |
-|-----------|-------|----------|
-| Microcontroller | ESP8266 NodeMCU | Wi-Fi connectivity & data processing |
-| Temperature/Humidity | DHT-22 | Environmental monitoring ±0.5°C accuracy |
-| Pressure Sensor | BMP180 | Atmospheric pressure & altitude |
-| Power Supply | 5V DC | USB or external adapter |
-| Feature / TODO | Solar Panel 5V 1W | Indefinite runtime (with TP4056 charger) |
+| Component            | Model             | Function                                 |
+| -------------------- | ----------------- | ---------------------------------------- |
+| Microcontroller      | ESP8266 NodeMCU   | Wi-Fi connectivity & data processing     |
+| Temperature/Humidity | DHT-22            | Environmental monitoring ±0.5°C accuracy |
+| Pressure Sensor      | BMP180            | Atmospheric pressure & altitude          |
+| Power Supply         | 5V DC             | USB or external adapter                  |
+| Feature / TODO       | Solar Panel 5V 1W | Indefinite runtime (with TP4056 charger) |
 
 ### Schematic
 
@@ -127,6 +128,7 @@ pio run -e production -t upload
   - `/humidity` - Current humidity (%)
   - `/pressure` - Atmospheric pressure (mmHg)
   - `/altitude` - Altitude (m)
+
 ---
 
 ## Setup Guide
@@ -145,6 +147,7 @@ pio run -e production -t upload
    - ESP8266 board support in PlatformIO
 
 2. **Configure Firmware**
+
    ```cpp
    // In the sketch:
    const char *ssid = "Your_WiFi_SSID";
@@ -153,10 +156,11 @@ pio run -e production -t upload
    ```
 
 3. **Choose Compile Mode**
+
    ```bash
    # Production mode (real sensors)
    pio run -e production -t upload
-   
+
    # Debug mode (mock data for testing)
    pio run -e debug -t upload
    ```
@@ -171,11 +175,11 @@ pio run -e production -t upload
 
 ## Power Management
 
-| State | Current | Duration |
-|-------|---------|----------|
-| Active (WiFi ON) | 80 mA | ~1 sec/10 sec |
-| Light Sleep | 0.9 mA | ~9 sec/10 sec |
-| **Average** | **~9 mA** | Continuous |
+| State            | Current   | Duration      |
+| ---------------- | --------- | ------------- |
+| Active (WiFi ON) | 80 mA     | ~1 sec/10 sec |
+| Light Sleep      | 0.9 mA    | ~9 sec/10 sec |
+| **Average**      | **~9 mA** | Continuous    |
 
 ---
 
@@ -183,9 +187,10 @@ pio run -e production -t upload
 
 ### Web Interface
 
-![Web Dashboard](docs/screenshots/web-interface.png)
+![Web Dashboard](img/webui.png)
 
 **Features:**
+
 - Real-time data updates
 - Responsive design for desktop and mobile browsers
 - Automatic sensor status detection
@@ -193,15 +198,17 @@ pio run -e production -t upload
 - Network-agnostic (HTTP only, no HTTPS required)
 
 **Access:**
+
 ```
 http://192.168.1.125
 ```
 
 ### Android Application
 
-![Android App](docs/screenshots/android-app.png)
+![Android App](img/android_app.gif)
 
 **Features:**
+
 - Real-time sensor monitoring
 - Sequential endpoint polling for stability
 - Connection status indicator
@@ -209,6 +216,7 @@ http://192.168.1.125
 - Detailed error diagnostics in Logcat
 
 **Setup:**
+
 ```
 1. Open source in Android Studio
 2. Edit IP address in TelemetryService.java:
@@ -220,20 +228,23 @@ http://192.168.1.125
 ```
 
 **Requirements:**
+
 - Android 8.0+ (API 26)
 - Internet permission
 - Same Wi-Fi network as ESP8266
 
 ### Windows Desktop Application
 
-![Windows App](docs/screenshots/windows-app.png)
+![Windows App](img/windowsui.png)
 
 **Features:**
+
 - .NET Framework demo application
 - Real-time data visualization
 - Lightweight and responsive UI
 
 **Setup:**
+
 ```
 1. Open project in Visual Studio
 2. Update IP address in config
@@ -242,6 +253,7 @@ http://192.168.1.125
 ```
 
 **Technology Stack:**
+
 - C# WinForms
 - HttpClient for REST API calls
 - .NET Framework 4.8
@@ -281,11 +293,13 @@ WiFiOutdoorSensor/
 ## Roadmap
 
 ### Version 1.1 (Current)
+
 - 5V 1A power supply
 - DEBUG_MODE for testing without sensors
 - Network diagnostics in Serial output
 
 ### Version 2.0 (Planned)
+
 - [ ] Deep Sleep + Cloud Backend for 1-2 year battery life
 - [ ] ESP32 migration (better power efficiency, more features)
 - [ ] LoRa support for long-range outdoor deployment
@@ -295,6 +309,7 @@ WiFiOutdoorSensor/
 - [ ] Improved enclosure design with solar panel integration
 
 ### Future Enhancements
+
 - [ ] MQTT support for home automation integration
 - [ ] Data cloud sync (optional)
 - [ ] Over-the-air (OTA) firmware updates
@@ -361,10 +376,10 @@ pio device monitor -b 115200
 
 ### Sensor Accuracy
 
-| Sensor | Accuracy | Response Time |
-|--------|----------|----------------|
-| DHT-22 | ±0.5°C / ±2% RH | ~2 sec |
-| BMP180 | ±1 hPa | ~10 msec |
+| Sensor | Accuracy        | Response Time |
+| ------ | --------------- | ------------- |
+| DHT-22 | ±0.5°C / ±2% RH | ~2 sec        |
+| BMP180 | ±1 hPa          | ~10 msec      |
 
 ### Network Performance
 
@@ -408,6 +423,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 4. **Check Documentation** - Comprehensive guides in /docs folder
 
 **Contact:**
+
 - GitHub Issues: [WiFiOutdoorSensor/issues](https://github.com/Ledrunning/WiFiOutdoorSensor/issues)
 - Project Repository: [Ledrunning/WiFiOutdoorSensor](https://github.com/Ledrunning/WiFiOutdoorSensor)
 
@@ -432,6 +448,7 @@ Thanks to the open-source community for providing excellent tools and documentat
 **Active Development** - Actively maintained and improved.
 
 Current focus:
+
 - Optimizing battery consumption
 - Expanding platform support
 - Improving documentation
