@@ -8,7 +8,7 @@ WiFiOutdoorSensor is a wireless outdoor temperature and humidity monitoring syst
 [![Android CI](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/android.yml/badge.svg)](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/android.yml)
 [![Build ESP8266 Firmware](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/Ledrunning/WiFiOutdoorSensor/actions/workflows/c-cpp.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Static Badge](https://img.shields.io/badge/powered_by-Android-blue)
+[![Android](https://img.shields.io/badge/powered_by-Android-blue)](https://www.android.com)
 
 
 ## Table of Contents
